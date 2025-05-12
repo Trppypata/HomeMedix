@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('img/payment-bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: auto;
+  }
+
+  .receipt-container {
+    margin-top: 35%;
+    max-width: 250px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  
+  img {
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .barcode {
+    max-width: 100%;
+  }
+  
+  hr {
+    border-top: 1px dashed #ccc;
+    margin: 0.5rem 0;
+  }
+  
+  /* Hide the print button and show barcode only during printing */
+  @media print {
+    .d-print-none {
+      display: none !important;
+    }
+    .barcode {
+      display: block !important;
+    }
+  
+    @page {
+      size: 3in auto;
+      margin: 10mm;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  }

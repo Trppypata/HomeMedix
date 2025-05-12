@@ -1,0 +1,244 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .wrapper {
+    display: flex;
+    position: relative;
+  }
+  
+  .sidebar {
+    width: 250px;
+    height: 100vh;
+    background: white;
+    border-radius: 0 20px 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+  }
+  
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+  }
+  
+  .logo {
+    height: 100px;
+    width: auto;
+  }
+  
+  .sidebar ul {
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 20px;
+  }
+  
+  .sidebar ul li a {
+    color: black;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar ul li a .fas {
+    margin-right: 10px;
+  }
+  
+  .sidebar ul li:hover {
+    background-color: #004aad;
+    border-radius: 0 20px 20px 0;
+  }
+  
+  .sidebar ul li:hover a {
+    color: white;
+  }
+  
+  .logout-container {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .btn-logout {
+    width: 90%;
+  }
+  
+  .main_content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+  
+  .header {
+    padding: 20px;
+    background: white;
+    color: #333;
+  }
+  
+  .info {
+    margin: 20px;
+  }
+  
+.notification-btn {
+    position: relative;
+    margin-right: 1rem;
+}
+.notification-btn .material-symbols-outlined {
+    font-size: 24px;
+}
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: -5px;
+    background-color: #dc3545;
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 6px;
+    border-radius: 100%;
+}
+
+  .bordered-blue {
+    color: white;
+    background-color: #004AAD;
+    font-weight: 700;
+    padding: 5px 15px;
+    border-radius: 10px;
+  }
+  
+  .blue{
+    color: #004aad;
+    font-weight: 700;
+  }
+
+  .white-text{
+    color: white;
+  }
+
+  .profile-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0.3,0.3,0.3,0.3);
+  }
+
+  .profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+  }
+
+  .profile-info {
+    text-align: center;
+  }
+
+  .profile-buttons .btn {
+    width: 100px;
+  }
+
+  .details-card {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0px 4px 8px rgba(0.3,0.3,0.3,0.3);
+  }
+
+  .details-card table {
+    width: 100%;
+  }
+
+  .details-card table td {
+    padding: 8px 10px;
+    vertical-align: middle;
+  }
+
+  .bordered-blue {
+    color: white;
+    background-color: #004AAD;
+    font-weight: 700;
+    padding: 5px 15px;
+    border-radius: 10px;
+  }
+    
+  .bordered-yellow{
+    color: #333333;
+    background-color: rgb(255, 208, 0);
+    padding: 5px 15px;
+    border-radius: 10px;
+  }
+  
+  .blue{
+    color: #004aad;
+    font-weight: 700;
+  }
+
+  .white-text{
+    color: white;
+  }
+
+  .mt-4{
+    margin-top: 0;
+  }
+
+.button-container button h4,h5{
+  margin: 0;
+}
+
+.button-container button img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  margin-right: 10px;
+}
+
+.btn-info{
+  background-color: #5ce1e6;
+  border-color: #5ce1e6;
+  border-radius: 10px;
+}
+
+.btn-info:hover{
+  background-color: #0cc0df;
+  border-color: #0cc0df;
+}
+
+a{
+  text-decoration: none;
+}
+
+.text-container{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.table-container .p-3{
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #0097b285;
+}
+
+.table-container .p-3 table{
+  padding: 0;
+  margin: 0;
+  border-spacing: 0 3px; 
+  border-collapse: separate;
+
+}
+
+.table-container .p-3 table tr{
+  height: 50px;
+  text-align: center;
+}
+
+.form-check-input {
+    width: 20px;
+    height: 20px;
+  }

@@ -1,0 +1,143 @@
+body{
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa; /* Adjust as needed */
+    padding: 0.5rem 1rem;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.logo-container {
+    flex-shrink: 0;
+}
+
+.logo {
+    height: 75px;
+    width: auto;
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.nav-item {
+    margin: 0 1rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #000;
+
+}
+
+.nav-link:hover {
+    background-color: #004AAD;
+    border-radius: 10px;
+    color: white;
+}
+
+.banner-container {
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.banner-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-text {
+    position: absolute; /* Position text over the image */
+    top: 33.5%; 
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust to center the text */
+    color: white; /* Change text color */
+    text-align: center; /* Center the text */
+    padding: 20px; /* Add padding around the text */
+
+}
+
+.banner-text h1 {
+    font-size: 72px; /* Adjust font size */
+}
+
+.blue{
+    color: #004AAD;
+    font-weight: 700;
+    font-size: 36px;
+
+}
+
+.bordered-blue{
+    color: white;
+    background-color: #004aad;
+    font-weight: 700;
+    padding: 5px;
+    border-radius: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.container-fluid{
+    margin-top: 25px;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.text-container{
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.borderless-container-xxl{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.picture-container {
+    visibility: hidden;
+    padding: 15px;
+    border: none;
+}
+
+.picture-container img {
+    visibility: visible;
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.picture-container img:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}

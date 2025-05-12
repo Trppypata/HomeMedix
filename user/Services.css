@@ -1,0 +1,241 @@
+body{
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa; /* Adjust as needed */
+    padding: 0.5rem 1rem;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.logo-container {
+    flex-shrink: 0;
+}
+
+.logo {
+    height: 75px;
+    width: auto;
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.nav-item {
+    margin: 0 1rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #000;
+
+}
+
+.nav-link:hover {
+    background-color: #004AAD;
+    border-radius: 10px;
+    color: white;
+}
+.banner-container {
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.banner-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-text {
+    position: absolute; /* Position text over the image */
+    top: 33.5%; 
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust to center the text */
+    color: white; /* Change text color */
+    text-align: center; /* Center the text */
+    padding: 20px; /* Add padding around the text */
+
+}
+
+.banner-text h1 {
+    font-size: 72px; /* Adjust font size */
+}
+
+.blue{
+    color: #004AAD;
+    font-weight: 700;
+}
+
+.bordered-blue{
+    color: white;
+    background-color: #004aad;
+    font-weight: 700;
+    padding: 5px;
+    border-radius: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.services{
+    background-color: var(--white);
+}
+
+.heading {
+    text-align: center;
+    color: var(--blue);
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+}
+
+.services .box-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(15rem, 1fr)); /* Smaller boxes */
+    gap: 1.5rem; /* Reduced space between boxes */
+}
+
+.services .box {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--box-shadow);
+}
+
+.services .box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.services .box img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+}
+
+.services .box .card-body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+}
+
+.services .box:hover img {
+    opacity: 0;
+}
+
+.services .box:hover .card-body {
+    opacity: 1;
+}
+
+.services .card-title {
+    font-size: 1rem; /* Smaller font size for titles */
+    font-weight: bold;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+}
+
+.services .card-subtitle {
+    font-size: 1rem; /* Smaller font size for subtitles */
+    color: var(--grey);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+}
+
+.services .card-text {
+    font-size: 1rem; /* Smaller font size for description text */
+    color: var(--grey);
+    margin-bottom: 0.5rem;
+}
+
+.book-now {
+    background-image: url('img/booknowBanner.jpg'); 
+    background-size: cover; 
+    background-position: center; 
+    padding: 8rem 8rem; 
+    border-radius: 0.5rem; 
+    margin:0; 
+    color: white;
+    position: relative; 
+    text-align: center; 
+    margin-top: 10rem;
+}
+
+.book-now::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 43, 100, 0.612); 
+    z-index: 1;
+}
+
+.container {
+    position: relative; 
+    z-index: 2;
+}
+
+.book-banner-container{
+    margin-top: 5rem;
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.book-text{
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.747);
+        height: 250px;
+        padding: 0 20px 0 20px;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+}
+
+.btn-primary{
+    background-color: #004AAD;
+    border-color: #004AAD;
+    border-radius: 20px;
+    height: 50px;
+}
+
+.btn-primary:hover{
+    background-color: #5271ff;
+    border-color: #5271ff;
+}

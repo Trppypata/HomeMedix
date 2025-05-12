@@ -1,0 +1,266 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  position: relative;
+}
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: white;
+  border-radius: 0 20px 20px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.logo {
+  height: 100px;
+  width: auto;
+}
+
+.sidebar ul {
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 20px;
+}
+
+.sidebar ul li a {
+  color: black;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar ul li a .fas {
+  margin-right: 10px;
+}
+
+.sidebar ul li:hover {
+  background-color: #004aad;
+  border-radius: 0 20px 20px 0;
+}
+
+.sidebar ul li:hover a {
+  color: white;
+}
+
+.logout-container {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-logout {
+  width: 90%;
+}
+
+.main_content {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+}
+
+.header {
+  padding: 20px;
+  background: white;
+  color: #333;
+}
+
+.info {
+  margin: 20px;
+}
+
+.notification-btn {
+  position: relative;
+  margin-right: 2rem;
+}
+.notification-btn .material-symbols-outlined {
+  font-size: 24px;
+}
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  background-color: #dc3545;
+  color: #fff;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 100%;
+}
+
+.bordered-blue {
+  color: white;
+  background-color: #004AAD;
+  font-weight: 700;
+  padding: 5px 15px;
+  border-radius: 10px;
+}
+
+.blue{
+  color: #004aad;
+  font-weight: 700;
+}
+
+.white-text{
+  color: white;
+}
+
+.banner-container {
+  width: 100%;
+  height: 35vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.banner-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.button-group{
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.custom-button {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.custom-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Individual Button Colors */
+.therapist { background-color: #004aad; } /* Dark Blue */
+.caregiver { background-color: #5271ff; } /* Blue */
+.patient { background-color: #38b6ff; } /* Cyan */
+.appointment { background-color: #5271ff; } /* Blue */
+.admin { background-color: #004aad; } /* Dark Blue */
+
+.custom-button img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.row {
+ margin: 0;
+}
+
+.row .g-3{
+  width: 100%;
+  height: auto;
+}
+
+.status-section{
+padding: 10px;
+margin-bottom: 50px;
+}
+
+.status-card {
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+}
+
+.status-texts{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  width: 75%;
+}
+
+.status-value {
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.status-label {
+  font-size: 16px;
+  color: #fff;
+
+}
+
+.status-img{
+  width: 25%;
+  height: auto;
+}
+
+.status-img img{
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.bg-light-blue {
+  background-color: #5272ff85;
+}
+
+.bg-light-teal {
+  background-color: #0097b285;
+}
+
+.bg-light-navy {
+  background-color: #004aad85;
+}
+
+.table-container .p-3{
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #0097b285;
+}
+
+.table-container .p-3 table{
+  padding: 0;
+  margin: 0;
+  border-spacing: 0 3px; 
+  border-collapse: separate;
+
+}
+
+.table-container .p-3 table tr{
+  height: 50px;
+  text-align: center;
+}
+
+
+
