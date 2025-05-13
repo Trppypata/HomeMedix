@@ -218,7 +218,7 @@ class Controller
             $max_attempts = 5;
             $lockout_time = 1; // minutes
 
-            // Check failed attempts in the last 5 minutes
+            // Check failed attempts in the last 1 minute
             $stmt = $this->con->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip_address = ? AND attempt_time > (NOW() - INTERVAL ? MINUTE)");
             $stmt->bind_param("si", $ip, $lockout_time);
             $stmt->execute();

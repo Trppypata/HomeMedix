@@ -579,6 +579,9 @@ session_start();
             animatedCards.forEach(card => observer.observe(card));
         });
     </script>
+    
+    <!-- HomeMedix Chatbot -->
+    <script src="../assets/js/chatbot.js"></script>
 
 </body>
 
