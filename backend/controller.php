@@ -216,7 +216,7 @@ class Controller
             extract($_POST);
             $ip = $_SERVER['REMOTE_ADDR'];
             $max_attempts = 5;
-            $lockout_time = 5; // minutes
+            $lockout_time = 1; // minutes
 
             // Check failed attempts in the last 5 minutes
             $stmt = $this->con->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip_address = ? AND attempt_time > (NOW() - INTERVAL ? MINUTE)");

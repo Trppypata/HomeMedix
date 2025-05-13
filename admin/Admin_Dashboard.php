@@ -1,8 +1,8 @@
 <?php
 require_once('../backend/function.php');
 require_once('../backend/config.php');
-if(!isset($_SESSION['role']) && $_SESSION['role'] != 0){
-  header("location: ../login.php");
+if (!isset($_SESSION['role']) && $_SESSION['role'] != 0) {
+  header("location: ../index.php");
   exit;
 }
 // Fetch unread notifications
@@ -11,6 +11,7 @@ $notif_result = $con->query($notif_sql);
 $notif_count = $notif_result ? $notif_result->num_rows : 0;
 ?>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,51 +22,52 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
   <link rel="stylesheet" href="Admin_Dashboard.css">
   <title>Dashboard - Admin</title>
 </head>
+
 <body>
   <div class="wrapper">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="logo-container">
-          <img src="img/logo.png" alt="Logo" class="logo">
-        </div>
-        <ul>
-          <li>
-            <a href="Admin_Dashboard.php">
-              <i class="fas fa-home"></i>Dashboard </a>
-          </li>
-          <li>
-            <a href="Admin_PatientRecord.php">
-              <i class="fas fa-bed"></i>Our Patients </a>
-          </li>
-          <li>
-            <a href="Admin_UserRecord.php?role=2">
-              <i class="fas fa-user-doctor"></i>Therapists </a>
-          </li>
-          <li>
-            <a href="Admin_UserRecord.php?role=3">
-              <i class="fas fa-user-nurse"></i>Caregivers </a>
-          </li>
-          <li>
-            <a href="Admin_UserRecord.php?role=1">
-              <i class="fas fa-user"></i>User Accounts </a>
-          </li>
-          <li>
-            <a href="Admin_UserRecord.php?role=0">
-              <i class="fas fa-user-tie"></i>Admin </a>
-          </li>
-          <li>
-            <a href="Admin_AppointmentRecord.php">
-              <i class="fas fa-calendar"></i>Appointments </a>
-          </li>
-          <li>
-            <a href="Admin_Inbox.php">
-              <i class="fas fa-envelope"></i>Inbox - Contact Us </a>
-          </li>
-        </ul>
-        <div class="logout-container">
-          <a href="../backend/ajax.php?action=logout" class="ms-3 p-0 w-100"><button class="btn btn-outline-danger btn-logout">Log Out</button></a>
-        </div>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo-container">
+        <img src="img/logo.png" alt="Logo" class="logo">
       </div>
+      <ul>
+        <li>
+          <a href="Admin_Dashboard.php">
+            <i class="fas fa-home"></i>Dashboard </a>
+        </li>
+        <li>
+          <a href="Admin_PatientRecord.php">
+            <i class="fas fa-bed"></i>Our Patients </a>
+        </li>
+        <li>
+          <a href="Admin_UserRecord.php?role=2">
+            <i class="fas fa-user-doctor"></i>Therapists </a>
+        </li>
+        <li>
+          <a href="Admin_UserRecord.php?role=3">
+            <i class="fas fa-user-nurse"></i>Caregivers </a>
+        </li>
+        <li>
+          <a href="Admin_UserRecord.php?role=1">
+            <i class="fas fa-user"></i>User Accounts </a>
+        </li>
+        <li>
+          <a href="Admin_UserRecord.php?role=0">
+            <i class="fas fa-user-tie"></i>Admin </a>
+        </li>
+        <li>
+          <a href="Admin_AppointmentRecord.php">
+            <i class="fas fa-calendar"></i>Appointments </a>
+        </li>
+        <li>
+          <a href="Admin_Inbox.php">
+            <i class="fas fa-envelope"></i>Inbox - Contact Us </a>
+        </li>
+      </ul>
+      <div class="logout-container">
+        <a href="../backend/ajax.php?action=logout" class="ms-3 p-0 w-100"><button class="btn btn-outline-danger btn-logout">Log Out</button></a>
+      </div>
+    </div>
 
     <!-- Main Content -->
     <div class="main_content">
@@ -74,7 +76,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
         <button class="btn btn-light notification-btn">
           <span class="material-symbols-outlined">notifications</span>
           <span class="notification-badge"><?= $notif_count ?></span>
-      </button>
+        </button>
 
         <h6>Admin <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span></h6>
       </div>
@@ -91,42 +93,42 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
               <img src="img/admin_dashboard_banner.jpg" alt="Banner">
             </div>
 
-              <div class="button-group d-flex justify-content-between text-center mt-5">
-                <div class="button">
-                  <button class="custom-button therapist">
-                    <img src="img/Add_Therapist.png" alt="Therapist Icon">
-                    Add Therapist
-                  </button>
-                </div>
-
-                <div class="button">
-                  <button class="custom-button caregiver">
-                    <img src="img/Add_Caregiver.png" alt="Caregiver Icon">
-                    Add Caregiver
-                  </button>
-                </div>
-
-                <div class="button">
-                  <button class="custom-button patient">
-                    <img src="img/Add_Patient.png" alt="Patient Icon">
-                    Add Patient
-                  </button>
-                </div>
-
-                <div class="button">
-                  <button class="custom-button appointment">
-                    <img src="img/Add_Appointment.png" alt="Appointment Icon">
-                    Add Appointment
-                  </button>
-                </div>
-
-                <div class="button">
-                  <button class="custom-button admin">
-                    <img src="img/Add_Admin.png" alt="Admin Icon">
-                    Add Admin
-                  </button>
-                </div>
+            <div class="button-group d-flex justify-content-between text-center mt-5">
+              <div class="button">
+                <button class="custom-button therapist">
+                  <img src="img/Add_Therapist.png" alt="Therapist Icon">
+                  Add Therapist
+                </button>
               </div>
+
+              <div class="button">
+                <button class="custom-button caregiver">
+                  <img src="img/Add_Caregiver.png" alt="Caregiver Icon">
+                  Add Caregiver
+                </button>
+              </div>
+
+              <div class="button">
+                <button class="custom-button patient">
+                  <img src="img/Add_Patient.png" alt="Patient Icon">
+                  Add Patient
+                </button>
+              </div>
+
+              <div class="button">
+                <button class="custom-button appointment">
+                  <img src="img/Add_Appointment.png" alt="Appointment Icon">
+                  Add Appointment
+                </button>
+              </div>
+
+              <div class="button">
+                <button class="custom-button admin">
+                  <img src="img/Add_Admin.png" alt="Admin Icon">
+                  Add Admin
+                </button>
+              </div>
+            </div>
 
             <div class="status-section mt-5">
               <h4><span class="blue">Analytical Status</span></h4>
@@ -207,7 +209,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                 </div>
               </div>
             </div>
-          
+
             <div class="table-container">
               <div class="row mt-4">
                 <!-- Therapists Section -->
@@ -245,7 +247,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                     </table>
                   </div>
                 </div>
-              
+
                 <!-- Caregivers Section -->
                 <div class="col-6">
 
@@ -280,33 +282,34 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
               </div>
             </div>
           </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="notification-dropdown" style="position:absolute;right:60px;top:60px;z-index:1000;background:#fff;border:1px solid #ccc;border-radius:8px;min-width:300px;display:none;">
-    <?php if($notif_count == 0): ?>
-      <div class="notification-item p-3">No new notifications.</div>
-    <?php else: ?>
-      <?php while($notif = $notif_result->fetch_assoc()): ?>
-        <div class="notification-item p-3 border-bottom">
-          <strong><?= htmlspecialchars($notif['type']) ?>:</strong>
-          <?= htmlspecialchars($notif['message']) ?><br>
-          <small><?= $notif['created_at'] ?></small>
-        </div>
-      <?php endwhile; ?>
-    <?php endif; ?>
-  </div>
-  <script>
-  // Toggle notification dropdown
-  const notifBtn = document.querySelector('.notification-btn');
-  const notifDropdown = document.querySelector('.notification-dropdown');
-  notifBtn.addEventListener('click', function(e) {
-    notifDropdown.style.display = notifDropdown.style.display === 'block' ? 'none' : 'block';
-    e.stopPropagation();
-  });
-  document.addEventListener('click', function() {
-    notifDropdown.style.display = 'none';
-  });
-  </script>
+    <div class="notification-dropdown" style="position:absolute;right:60px;top:60px;z-index:1000;background:#fff;border:1px solid #ccc;border-radius:8px;min-width:300px;display:none;">
+      <?php if ($notif_count == 0): ?>
+        <div class="notification-item p-3">No new notifications.</div>
+      <?php else: ?>
+        <?php while ($notif = $notif_result->fetch_assoc()): ?>
+          <div class="notification-item p-3 border-bottom">
+            <strong><?= htmlspecialchars($notif['type']) ?>:</strong>
+            <?= htmlspecialchars($notif['message']) ?><br>
+            <small><?= $notif['created_at'] ?></small>
+          </div>
+        <?php endwhile; ?>
+      <?php endif; ?>
+    </div>
+    <script>
+      // Toggle notification dropdown
+      const notifBtn = document.querySelector('.notification-btn');
+      const notifDropdown = document.querySelector('.notification-dropdown');
+      notifBtn.addEventListener('click', function(e) {
+        notifDropdown.style.display = notifDropdown.style.display === 'block' ? 'none' : 'block';
+        e.stopPropagation();
+      });
+      document.addEventListener('click', function() {
+        notifDropdown.style.display = 'none';
+      });
+    </script>
 </body>
+
 </html>

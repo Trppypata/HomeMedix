@@ -252,7 +252,7 @@
                         </div>
                     </form>
                     <div class="text-container">
-                        <p>Already Have An Account? <a href="index.php"><span class="blue">Log In</span></a></p>
+                        <p>Already Have An Account? <a href="./index.php"><span class="blue">Log In</span></a></p>
                     </div>
                 </div>
             </div>
