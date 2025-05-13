@@ -4,6 +4,7 @@ session_start();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +16,10 @@ session_start();
     <link rel="stylesheet" href="LandingPage.css">
     <title>Home - HomeMedix</title>
 </head>
+
 <body>
 
-<nav class="navbar">
+    <nav class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
                 <img src="img/logo.png" alt="Logo" class="logo" />
@@ -38,19 +40,19 @@ session_start();
                 <li class="nav-item">
                     <a class="nav-link" href="ContactUs.php">Contact Us</a>
                 </li>
-                <?php if(isset($_SESSION['id'])): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="profile.php">Hello <?= $_SESSION['fname'] ?></a>
-                </li>
+                <?php if (isset($_SESSION['id'])): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Profile.php">Hello <?= $_SESSION['fname'] ?></a>
+                    </li>
                 <?php else: ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="Login.php">Login</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.php">Login</a>
+                    </li>
                 <?php endif; ?>
             </ul>
         </div>
     </nav>
-    
+
 
     <div class="marquee-container-fluid">
         <div class="marquee-left">
@@ -65,9 +67,9 @@ session_start();
             <h3 style="background-color: #38b6ff;">HomeMedix</h3>
             <h3 style="background-color: #004AAD;">HomeMedix</h3>
             <h3 style="background-color: #5271ff;">HomeMedix</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 65px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 65px;">
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
@@ -79,9 +81,9 @@ session_start();
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 130px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 130px;">
             <h3 style="background-color: #004AAD;">Physical Therapy</h3>
             <h3 style="background-color: #5271ff;">Physical Therapy</h3>
             <h3 style="background-color: #38b6ff;">Physical Therapy</h3>
@@ -93,9 +95,9 @@ session_start();
             <h3 style="background-color: #38b6ff;">Physical Therapy</h3>
             <h3 style="background-color: #004AAD;">Physical Therapy</h3>
             <h3 style="background-color: #5271ff;">Physical Therapy</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 195px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 195px;">
             <h3 style="background-color: #0097b2;">Hope & Heal</h3>
             <h3 style="background-color: #0cc0df;">Hope & Heal</h3>
             <h3 style="background-color: #5ce1e6;">Hope & Heal</h3>
@@ -107,9 +109,9 @@ session_start();
             <h3 style="background-color: #5ce1e6;">Hope & Heal</h3>
             <h3 style="background-color: #0097b2;">Hope & Heal</h3>
             <h3 style="background-color: #0cc0df;">Hope & Heal</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 260px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 260px;">
             <h3 style="background-color: #004AAD;">Caregiving</h3>
             <h3 style="background-color: #5271ff;">Caregiving</h3>
             <h3 style="background-color: #38b6ff;">Caregiving</h3>
@@ -121,9 +123,9 @@ session_start();
             <h3 style="background-color: #38b6ff;">Caregiving</h3>
             <h3 style="background-color: #004AAD;">Caregiving</h3>
             <h3 style="background-color: #5271ff;">Caregiving</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 325px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 325px;">
             <h3 style="background-color: #0097b2;">Caring Heart</h3>
             <h3 style="background-color: #0cc0df;">Caring Heart</h3>
             <h3 style="background-color: #5ce1e6;">Caring Heart</h3>
@@ -135,9 +137,9 @@ session_start();
             <h3 style="background-color: #5ce1e6;">Caring Heart</h3>
             <h3 style="background-color: #0097b2;">Caring Heart</h3>
             <h3 style="background-color: #0cc0df;">Caring Heart</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 390px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 390px;">
             <h3 style="background-color: #004AAD;">Nursing Home</h3>
             <h3 style="background-color: #5271ff;">Nursing Home</h3>
             <h3 style="background-color: #38b6ff;">Nursing Home</h3>
@@ -149,9 +151,9 @@ session_start();
             <h3 style="background-color: #38b6ff;">Nursing Home</h3>
             <h3 style="background-color: #004AAD;">Nursing Home</h3>
             <h3 style="background-color: #5271ff;">Nursing Home</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 455px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 455px;">
             <h3 style="background-color: #0097b2;">Strength regained</h3>
             <h3 style="background-color: #0cc0df;">Strength regained</h3>
             <h3 style="background-color: #5ce1e6;">Strength regained</h3>
@@ -163,9 +165,9 @@ session_start();
             <h3 style="background-color: #5ce1e6;">Strength regained</h3>
             <h3 style="background-color: #0097b2;">Strength regained</h3>
             <h3 style="background-color: #0cc0df;">Strength regained</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 520px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 520px;">
             <h3 style="background-color: #004AAD;">HomeMedix</h3>
             <h3 style="background-color: #5271ff;">HomeMedix</h3>
             <h3 style="background-color: #38b6ff;">HomeMedix</h3>
@@ -177,9 +179,9 @@ session_start();
             <h3 style="background-color: #38b6ff;">HomeMedix</h3>
             <h3 style="background-color: #004AAD;">HomeMedix</h3>
             <h3 style="background-color: #5271ff;">HomeMedix</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 585px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 585px;">
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
@@ -191,30 +193,30 @@ session_start();
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
-         </div>
-         
-         <div class="container-fluid">
+        </div>
+
+        <div class="container-fluid">
             <div class="row container-xxl">
                 <div class="col container-lg">
                     <div class="text-container text-center">
                         <h1><span class="blue">Welcome to HomeMedix!</span></h1>
                         <p>Your trusted partner in quality caregiving, physical therapy, and nursing home services.
                             At Homemedix, we are committed to providing compassionate, personalized care that helps you or your loved ones live healthier, more comfortable lives. Whether you're seeking rehabilitation, assistance with daily tasks, or long-term support, our team of dedicated experts is here to make every day a little easier.</p>
-                            <div class="button-container">
-                                <a href="Appointment.php">
-                                  <button type="button" class="btn btn-primary">Book an Appointment Now!</button>
-                                </a>
-                                <a href="ContactUs.php">
-                                  <button type="button" class="btn btn-outline-primary">Contact Us</button>
-                                </a>
-                              </div>
+                        <div class="button-container">
+                            <a href="Appointment.php">
+                                <button type="button" class="btn btn-primary">Book an Appointment Now!</button>
+                            </a>
+                            <a href="ContactUs.php">
+                                <button type="button" class="btn btn-outline-primary">Contact Us</button>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="col container-lg">
                     <img src="img/Therapist.png" alt="Medical Professional" style="width: 500px; height: 550px;">
                 </div>
             </div>
-         </div>
+        </div>
     </div>
 
     <div class="container-fluid">
@@ -222,7 +224,7 @@ session_start();
             <div class="text-container text-center">
                 <h1>Why Should You <span class="blue">Choose Us</span>?</h1>
             </div>
-    
+
             <div class="col">
                 <div class="container-lg" style="background-color: #004AAD; border-radius: 20px; box-shadow: 0px 4px 8px rgba(0.3,0.3,0.3,0.3);">
                     <div class="sign-container animated-card">
@@ -234,7 +236,7 @@ session_start();
                     </div>
                 </div>
             </div>
-    
+
             <div class="col">
                 <div class="container-lg" style="background-color: #5271ff; border-radius: 20px; box-shadow: 0px 4px 8px rgba(0.3,0.3,0.3,0.3);">
                     <div class="sign-container animated-card">
@@ -246,7 +248,7 @@ session_start();
                     </div>
                 </div>
             </div>
-    
+
             <div class="col">
                 <div class="container-lg" style="background-color: #38b6ff; border-radius: 20px; box-shadow: 0px 4px 8px rgba(0.3,0.3,0.3,0.3);">
                     <div class="sign-container animated-card">
@@ -283,14 +285,14 @@ session_start();
 
             <div class="col container-lg">
                 <a href="#" class="card-link">
-                <div class="card" style="width: 18rem;">
-                    <img src="img/PhysicalTherapy.jpeg" class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title">Physical Therapy</h5>
-                      <p class="card-text">Expert physical therapists provide personalized care for mobility and recovery.</p>
+                    <div class="card" style="width: 18rem;">
+                        <img src="img/PhysicalTherapy.jpeg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Physical Therapy</h5>
+                            <p class="card-text">Expert physical therapists provide personalized care for mobility and recovery.</p>
+                        </div>
                     </div>
-                  </div>
-                  </a>
+                </a>
             </div>
 
             <div class="col container-lg">
@@ -298,8 +300,8 @@ session_start();
                     <div class="card" style="width: 18rem;">
                         <img src="img/Caregiving.png" class="card-img-top" alt="...">
                         <div class="card-body">
-                        <h5 class="card-title">Caregiving Services</h5>
-                        <p class="card-text">Expert caregivers providing compassionate, personalized care for seniors and patients.</p>
+                            <h5 class="card-title">Caregiving Services</h5>
+                            <p class="card-text">Expert caregivers providing compassionate, personalized care for seniors and patients.</p>
                         </div>
                     </div>
                 </a>
@@ -310,8 +312,8 @@ session_start();
                     <div class="card" style="width: 18rem;">
                         <img src="img/NursingHome.jpeg" class="card-img-top" alt="...">
                         <div class="card-body">
-                        <h5 class="card-title">Nursing Home</h5>
-                        <p class="card-text">Expert nursing care with compassion, personalized support, and trusted service.</p>
+                            <h5 class="card-title">Nursing Home</h5>
+                            <p class="card-text">Expert nursing care with compassion, personalized support, and trusted service.</p>
                         </div>
                     </div>
                 </a>
@@ -328,7 +330,7 @@ session_start();
                 <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
             </svg>
         </div>
-        <div class="row borderless-container-xxl" style="background-image: linear-gradient(#38b6ff, #38b6ff)";>
+        <div class="row borderless-container-xxl" style="background-image: linear-gradient(#38b6ff, #38b6ff)" ;>
             <div class="col container-lg animated-card">
                 <div class="text-container text-center white-text">
                     <h1>Physical Therapy</h1>
@@ -358,7 +360,7 @@ session_start();
     </div>
 
     <div class="blue-container-fluid">
-        <div class="row borderless-container-xxl" style="background-image: linear-gradient(#3867ff, #004aad, #004aad)";>
+        <div class="row borderless-container-xxl" style="background-image: linear-gradient(#3867ff, #004aad, #004aad)" ;>
             <div class="col container-lg animated-card">
                 <div class="text-container text-center white-text">
                     <h1>Nursing Home</h1>
@@ -387,19 +389,19 @@ session_start();
             <div class="col picture-container animated-card">
                 <img src="img/Practitioners2.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container animated-card">
                 <img src="img/Practitioners1.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container animated-card">
                 <img src="img/Practitioners3.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container animated-card">
                 <img src="img/Practitioners5.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container animated-card">
                 <img src="img/Practitioners4.png" alt="picture-container">
             </div>
@@ -412,7 +414,7 @@ session_start();
                 <div class="text-container text-center">
                     <h1><span class="blue">Customer Reviews</span></h1>
                     <p>Check our customers' insights about our service</p>
-                </div>    
+                </div>
                 <div class="card-container">
                     <div class="review-card">
                         <div class="customer-info">
@@ -490,7 +492,7 @@ session_start();
                     <button class="btn btn-primary" style="width: 250px; height: 50px;">Subscribe</button>
                 </div>
             </div>
-            
+
         </div>
     </div>
 
@@ -514,67 +516,70 @@ session_start();
     <!--footer-->
     <footer class="bg-light text-center text-lg-start">
         <div class="container p-4">
-          <!-- Row -->
-          <div class="row">
-            <!-- Column 1 -->
-            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
-              <h5 class="text-uppercase">About HomeMedix</h5>
-              <p class="text-justify">
-                HomeMedix is dedicated to providing quality in-home healthcare services, including physical therapy, caregiving, and nursing. We prioritize compassionate, personalized care to help individuals lead healthier lives.
-              </p>
+            <!-- Row -->
+            <div class="row">
+                <!-- Column 1 -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">About HomeMedix</h5>
+                    <p class="text-justify">
+                        HomeMedix is dedicated to providing quality in-home healthcare services, including physical therapy, caregiving, and nursing. We prioritize compassionate, personalized care to help individuals lead healthier lives.
+                    </p>
+                </div>
+                <!-- Column 2 -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="LandingPage.php" class="text-dark">Home</a></li>
+                        <li><a href="Services.php" class="text-dark">Services</a></li>
+                        <li><a href="PractitionersPage.php" class="text-dark">Practitioners</a></li>
+                        <li><a href="AboutUs.php" class="text-dark">About Us</a></li>
+                        <li><a href="ContactUs.php" class="text-dark">Contact Us</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3 -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Contact Information</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt"></i> <strong>124 A. Flores St, Marikina, 1804 Metro Manila</strong></li>
+                        <li><i class="fas fa-map-marker-alt"></i> <strong>28 6th St, Marikina, 1807 Metro Manila</strong></li>
+                        <li><i class="fas fa-map-marker-alt"></i><strong>24 Sampaguita St, Marikina, 1805 Metro Manila</strong></li>
+                        <li><i class="fas fa-phone"></i> 0917 102 8250</li>
+                        <li><i class="fas fa-envelope"></i> HomeMedix.ptcaregiving@gmail.com</li>
+                    </ul>
+                </div>
             </div>
-            <!-- Column 2 -->
-            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
-              <h5 class="text-uppercase">Quick Links</h5>
-              <ul class="list-unstyled">
-                <li><a href="LandingPage.php" class="text-dark">Home</a></li>
-                <li><a href="Services.php" class="text-dark">Services</a></li>
-                <li><a href="PractitionersPage.php" class="text-dark">Practitioners</a></li>
-                <li><a href="AboutUs.php" class="text-dark">About Us</a></li>
-                <li><a href="ContactUs.php" class="text-dark">Contact Us</a></li>
-              </ul>
-            </div>
-            <!-- Column 3 -->
-            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
-              <h5 class="text-uppercase">Contact Information</h5>
-              <ul class="list-unstyled">
-                <li><i class="fas fa-map-marker-alt"></i> <strong>124 A. Flores St, Marikina, 1804 Metro Manila</strong></li>
-                <li><i class="fas fa-map-marker-alt"></i> <strong>28 6th St, Marikina, 1807 Metro Manila</strong></li>
-                <li><i class="fas fa-map-marker-alt"></i><strong>24 Sampaguita St, Marikina, 1805 Metro Manila</strong></li>
-                <li><i class="fas fa-phone"></i> 0917 102 8250</li>
-                <li><i class="fas fa-envelope"></i> HomeMedix.ptcaregiving@gmail.com</li>
-              </ul>
-            </div>
-          </div>
 
-          <!-- Row End -->
+            <!-- Row End -->
         </div>
-      
+
         <!-- Copyright -->
         <div class="text-center p-3" style="background-color: #f1f1f1;">
-          © 2024 HomeMedix. All rights reserved.
+            © 2024 HomeMedix. All rights reserved.
         </div>
-      </footer>
+    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>      
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="home.js"></script>
-    
+
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-    const animatedCards = document.querySelectorAll(".animated-card");
+        document.addEventListener("DOMContentLoaded", () => {
+            const animatedCards = document.querySelectorAll(".animated-card");
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add("show");
-                observer.unobserve(entry.target); // Stop observing once animation is triggered
-            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                        observer.unobserve(entry.target); // Stop observing once animation is triggered
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            animatedCards.forEach(card => observer.observe(card));
         });
-    }, { threshold: 0.1 });
-
-    animatedCards.forEach(card => observer.observe(card));
-    });
     </script>
 
 </body>
+
 </html>

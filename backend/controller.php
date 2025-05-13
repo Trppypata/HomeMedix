@@ -1,38 +1,45 @@
 <?php
-Class Controller {
+class Controller
+{
     private $con;
     private $mail;
+    private $base_url;
 
-    public function __construct() {
+    public function __construct()
+    {
         require_once('./config.php');
         $this->con = $con;
+        $this->base_url = $base_url;
 
         require_once('./mailer.php');
         $this->mail = $mail;
     }
 
-    function validateName($name) {
+    function validateName($name)
+    {
         return preg_match('/^[a-zA-Z\s]+$/', $name);
     }
 
-    function validateEmail($email) {
+    function validateEmail($email)
+    {
         return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
-    function validatePassword($password) {
+    function validatePassword($password)
+    {
         return preg_match("/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/", $password);
     }
 
-    function validatePhone($phone) {
+    function validatePhone($phone)
+    {
         return preg_match('/^(09\d{9}|\+639\d{9})$/', $phone);
     }
 
-    function isEmailTaken(){
-        
-    }
+    function isEmailTaken() {}
 
-    function signup(){
-        try{
+    function signup()
+    {
+        try {
             extract($_POST);
 
             $hash_pass = password_hash($password, PASSWORD_DEFAULT);
@@ -48,39 +55,39 @@ Class Controller {
                 return;
             }
 
-            if ($password != $cpassword){
+            if ($password != $cpassword) {
                 echo json_encode(['status' => 'error', 'message' => 'Password and confirm password do not match.']);
                 return;
             }
 
-            if(!$this->validatePhone($phone)) {
+            if (!$this->validatePhone($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Phone Number. It must start with 09 or +639 followed by 9 digits.']);
                 return;
             }
 
-            if(!$this->validateName($fname)){
+            if (!$this->validateName($fname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid First Name. Only alphabets and spaces are allowed.']);
                 return;
             }
 
-            if(!$this->validateName($lname)){
+            if (!$this->validateName($lname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Last Name. Only alphabets and spaces are allowed.']);
                 return;
             }
 
             $sql = "SELECT * FROM users WHERE email = ?";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("s", $email);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $stmt->store_result();
 
                 if ($stmt->num_rows > 0) {
                     echo json_encode(['status' => 'error', 'message' => 'Email is taken. Please login or register a new email.']);
                     return;
                 }
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
 
@@ -91,7 +98,7 @@ Class Controller {
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("sssssi", $fname, $lname, $phone, $email, $hash_pass, $role);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $stmt->close();
 
                 $token = bin2hex(random_bytes(16));
@@ -102,8 +109,11 @@ Class Controller {
                 $stmt = $this->con->prepare($sql);
                 $stmt->bind_param("is", $user_id, $token);
 
-                if($stmt->execute()){
-                    $link = "http://localhost/homemedix/backend/ajax.php?action=verify&secret=$token";
+                if ($stmt->execute()) {
+
+                    $link = "{$this->base_url}/backend/ajax.php?action=verify&secret=$token";
+
+
 
                     $message = "
                         <html>
@@ -129,7 +139,7 @@ Class Controller {
                         'Message has been sent';
                     }
 
-                    if(!empty($hire_date)){
+                    if (!empty($hire_date)) {
                         $stmt->close();
 
                         $sql = "INSERT INTO practitioners (user_id, specialization, hire_date) VALUES (?, ?, ?)";
@@ -137,26 +147,27 @@ Class Controller {
                         $stmt = $this->con->prepare($sql);
                         $stmt->bind_param("iss", $user_id, $specialization, $hire_date);
 
-                        if(!$stmt->execute()){
+                        if (!$stmt->execute()) {
                             echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
                         }
                     }
 
                     echo json_encode(['status' => 'success', 'message' => 'Registered successfully!. Please check your email to verify your account.']);
                     return;
-                }else{
+                } else {
                     echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
                 }
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function verify(){
-        try{
+    function verify()
+    {
+        try {
             session_start();
             extract($_GET);
 
@@ -165,7 +176,7 @@ Class Controller {
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("s", $secret);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $stmt->store_result();
 
                 if ($stmt->num_rows >  0) {
@@ -179,28 +190,29 @@ Class Controller {
                     $stmt = $this->con->prepare($sql);
                     $stmt->bind_param("i", $user_id);
 
-                    if($stmt->execute()){
+                    if ($stmt->execute()) {
                         $_SESSION['flash-msg'] = 'verified';
-                        header("location: ../login.php");
-                    }else{
+                        header("location: ../index.php");
+                    } else {
                         $_SESSION['flash-msg'] = 'account-not-found';
-                        header("location: ../login.php");
+                        header("location: ../index.php");
                     }
-                }else{
+                } else {
                     $_SESSION['flash-msg'] = 'account-not-found';
-                    header("location: ../login.php");
+                    header("location: ../index.php");
                 }
-            }else{
+            } else {
                 $_SESSION['flash-msg'] = 'account-not-found';
-                header("location: ../login.php");
+                header("location: ../index.php");
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function login(){
-        try{
+    function login()
+    {
+        try {
             extract($_POST);
             $ip = $_SERVER['REMOTE_ADDR'];
             $max_attempts = 5;
@@ -222,7 +234,7 @@ Class Controller {
                         'Intrusion Alert: Too Many Failed Logins',
                         "There have been $max_attempts failed login attempts from IP: $ip."
                     );
-                    
+
                     // Insert notification for admin dashboard
                     $notif_stmt = $this->con->prepare("INSERT INTO admin_notifications (type, message) VALUES (?, ?)");
                     $type = 'Intrusion';
@@ -238,13 +250,13 @@ Class Controller {
             $sql = "SELECT id, fname, lname, password, status, role FROM users WHERE email = ?";
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("s", $email);
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $stmt->store_result();
                 if ($stmt->num_rows >  0) {
                     $stmt->bind_result($id, $fname, $lname, $db_password, $status, $role);
                     $stmt->fetch();
-                    if(password_verify($password, $db_password)){
-                        if($status == 1){
+                    if (password_verify($password, $db_password)) {
+                        if ($status == 1) {
                             session_start();
                             $_SESSION['id'] = $id;
                             $_SESSION['fname'] = $fname;
@@ -257,14 +269,14 @@ Class Controller {
                             $clear->execute();
                             $clear->close();
                             echo json_encode(['status' => 'success']);
-                        }else{
-                            if($status == 2){
+                        } else {
+                            if ($status == 2) {
                                 echo json_encode(['status' => 'error', 'message' => 'Your account is inactive!. Please contact the administrator.']);
-                            }else{
+                            } else {
                                 echo json_encode(['status' => 'error', 'message' => 'Your account is unverified!. Please check your email address.']);
                             }
                         }
-                    }else{
+                    } else {
                         // Log failed attempt
                         $fail = $this->con->prepare("INSERT INTO login_attempts (ip_address, attempt_time) VALUES (?, NOW())");
                         $fail->bind_param("s", $ip);
@@ -272,7 +284,7 @@ Class Controller {
                         $fail->close();
                         echo json_encode(['status' => 'error', 'message' => 'Email or password is incorrect.']);
                     }
-                }else{
+                } else {
                     // Log failed attempt
                     $fail = $this->con->prepare("INSERT INTO login_attempts (ip_address, attempt_time) VALUES (?, NOW())");
                     $fail->bind_param("s", $ip);
@@ -280,16 +292,17 @@ Class Controller {
                     $fail->close();
                     echo json_encode(['status' => 'error', 'message' => 'Email or password is incorrect.']);
                 }
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function update_user(){
-        try{
+    function update_user()
+    {
+        try {
             extract($_POST);
 
             if (!$this->validateEmail($email)) {
@@ -297,34 +310,34 @@ Class Controller {
                 return;
             }
 
-            if(!$this->validatePhone($phone)) {
+            if (!$this->validatePhone($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Phone Number. It must start with 09 or +639 followed by 9 digits.']);
                 return;
             }
 
-            if(!$this->validateName($fname)){
+            if (!$this->validateName($fname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid First Name. Only alphabets and spaces are allowed.']);
                 return;
             }
 
-            if(!$this->validateName($lname)){
+            if (!$this->validateName($lname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Last Name. Only alphabets and spaces are allowed.']);
                 return;
             }
 
             $sql = "SELECT * FROM users WHERE email = ? AND id != ?";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("si", $email, $user_id);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $stmt->store_result();
 
                 if ($stmt->num_rows > 0) {
                     echo json_encode(['status' => 'error', 'message' => 'Email is taken.']);
                     return;
                 }
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
 
@@ -335,31 +348,32 @@ Class Controller {
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("ssssi", $fname, $lname, $phone, $email, $user_id);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $stmt->close();
 
-                if(!empty($hire_date)){
+                if (!empty($hire_date)) {
                     $sql = "UPDATE practitioners SET specialization = ?, hire_date = ? WHERE user_id = ?";
 
                     $stmt = $this->con->prepare($sql);
                     $stmt->bind_param("ssi", $specialization, $hire_date, $user_id);
 
-                    if(!$stmt->execute()){
+                    if (!$stmt->execute()) {
                         echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
                     }
                 }
 
                 echo json_encode(['status' => 'success', 'message' => 'User updated successfully!.']);
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function delete_user(){
-        try{
+    function delete_user()
+    {
+        try {
             extract($_POST);
 
             $sql = "DELETE FROM users WHERE id = ?";
@@ -367,31 +381,32 @@ Class Controller {
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("i", $user_id);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 echo json_encode(['status' => 'success', 'message' => 'User deleted successfully!.']);
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function add_appointment(){
-        try{
+    function add_appointment()
+    {
+        try {
             session_start();
             extract($_POST);
 
             $user_id = $user_id ?? $_SESSION['id'];
 
-            if($status == 0 && empty($fname) && empty($lname) && empty($sex) && empty($bday) && empty($address) && empty($barangay) && empty($city) && empty($zip) && empty($appointment_case) && empty($service) && empty($appointment_date) && empty($appointment_time) && empty($email) && empty($phone)){
+            if ($status == 0 && empty($fname) && empty($lname) && empty($sex) && empty($bday) && empty($address) && empty($barangay) && empty($city) && empty($zip) && empty($appointment_case) && empty($service) && empty($appointment_date) && empty($appointment_time) && empty($email) && empty($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Please fill at least 1 field to save as draft.']);
                 return;
             }
 
             if ($status == 1) {
                 $emptyFields = [];
-            
+
                 if (!isset($fname) || $fname === '') $emptyFields[] = 'First Name';
                 if (!isset($lname) || $lname === '') $emptyFields[] = 'Last Name';
                 if (!isset($sex) || $sex === '') $emptyFields[] = 'Sex';
@@ -406,7 +421,7 @@ Class Controller {
                 if (!isset($appointment_time) || $appointment_time === '') $emptyFields[] = 'Appointment Time';
                 if (!isset($email) || $email === '') $emptyFields[] = 'Email';
                 if (!isset($phone) || $phone === '') $emptyFields[] = 'Phone';
-            
+
                 if (!empty($emptyFields)) {
                     echo json_encode([
                         'status' => 'error',
@@ -414,9 +429,9 @@ Class Controller {
                     ]);
                     return;
                 }
-            }   
+            }
 
-            if(!empty($phone) && !$this->validatePhone($phone)) {
+            if (!empty($phone) && !$this->validatePhone($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Phone Number. It must start with 09 or +639 followed by 9 digits.']);
                 return;
             }
@@ -426,12 +441,12 @@ Class Controller {
                 return;
             }
 
-            if(!empty($fname) && !$this->validateName($fname)){
+            if (!empty($fname) && !$this->validateName($fname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid First Name. Only alphabets and spaces are allowed.']);
                 return;
             }
 
-            if(!empty($lname) && !$this->validateName($lname)){
+            if (!empty($lname) && !$this->validateName($lname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Last Name. Only alphabets and spaces are allowed.']);
                 return;
             }
@@ -441,34 +456,35 @@ Class Controller {
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("isssissssssiissssi", $user_id, $fname, $mname, $lname, $sex, $bday, $address, $barangay, $city, $zip, $appointment_case, $service, $payment, $appointment_date, $appointment_time, $email, $phone, $status);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 $appointment_id = $this->con->insert_id;
-                if($status == 1){
+                if ($status == 1) {
                     $message = 'Appointment submitted successfully!.';
-                }else{
+                } else {
                     $message = 'Appointment saved to drafts successfully!.';
                 }
                 echo json_encode(['status' => 'success', 'message' => $message, 'id' => $appointment_id]);
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function update_appointment(){
-        try{
+    function update_appointment()
+    {
+        try {
             extract($_POST);
 
-            if($status == 0 && empty($fname) && empty($lname) && empty($sex) && empty($bday) && empty($address) && empty($barangay) && empty($city) && empty($zip) && empty($appointment_case) && empty($service) && empty($appointment_date) && empty($appointment_time) && empty($email) && empty($phone)){
+            if ($status == 0 && empty($fname) && empty($lname) && empty($sex) && empty($bday) && empty($address) && empty($barangay) && empty($city) && empty($zip) && empty($appointment_case) && empty($service) && empty($appointment_date) && empty($appointment_time) && empty($email) && empty($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Please fill at least 1 field to save as draft.']);
                 return;
             }
 
             if ($status == 1) {
                 $emptyFields = [];
-            
+
                 if (!isset($fname) || $fname === '') $emptyFields[] = 'First Name';
                 if (!isset($lname) || $lname === '') $emptyFields[] = 'Last Name';
                 if (!isset($sex) || $sex === '') $emptyFields[] = 'Sex';
@@ -483,7 +499,7 @@ Class Controller {
                 if (!isset($appointment_time) || $appointment_time === '') $emptyFields[] = 'Appointment Time';
                 if (!isset($email) || $email === '') $emptyFields[] = 'Email';
                 if (!isset($phone) || $phone === '') $emptyFields[] = 'Phone';
-            
+
                 if (!empty($emptyFields)) {
                     echo json_encode([
                         'status' => 'error',
@@ -491,14 +507,14 @@ Class Controller {
                     ]);
                     return;
                 }
-            }            
-            
+            }
+
             // if($status == 1 && (empty($fname) || empty($lname) || $sex == '' || empty($bday) || empty($address) || empty($barangay) || empty($city) || empty($zip) || empty($appointment_case) || service == '' || empty($appointment_date) || $appointment_time == '' || empty($email) || empty($phone))){
             //     echo json_encode(['status' => 'error', 'message' => 'Please fill all fields to submit appointment or save as draft.']);
             //     return;
             // }
 
-            if(!empty($phone) && !$this->validatePhone($phone)) {
+            if (!empty($phone) && !$this->validatePhone($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Phone Number. It must start with 09 or +639 followed by 9 digits.']);
                 return;
             }
@@ -508,12 +524,12 @@ Class Controller {
                 return;
             }
 
-            if(!empty($fname) && !$this->validateName($fname)){
+            if (!empty($fname) && !$this->validateName($fname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid First Name. Only alphabets and spaces are allowed.']);
                 return;
             }
 
-            if(!empty($lname) && !$this->validateName($lname)){
+            if (!empty($lname) && !$this->validateName($lname)) {
                 echo json_encode(['status' => 'error', 'message' => 'Invalid Last Name. Only alphabets and spaces are allowed.']);
                 return;
             }
@@ -523,80 +539,83 @@ Class Controller {
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("sssissssssiissssii", $fname, $mname, $lname, $sex, $bday, $address, $barangay, $city, $zip, $appointment_case, $service, $payment, $appointment_date, $appointment_time, $email, $phone, $status, $appointment_id);
 
-            if($stmt->execute()){
-                if($status == 1){
+            if ($stmt->execute()) {
+                if ($status == 1) {
                     $message = 'Appointment submitted successfully!.';
-                }else{
+                } else {
                     $message = 'Appointment draft updated successfully!.';
                 }
                 echo json_encode(['status' => 'success', 'message' => $message, 'id' => $appointment_id]);
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function update_appoinment_status(){
-        try{
+    function update_appoinment_status()
+    {
+        try {
             session_start();
             extract($_POST);
-            
+
             $sql = "UPDATE appointments SET practitioner_id = ?, status = ? WHERE id = ?";
 
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("iii", $_SESSION['id'], $status, $appointment_id);
 
-            if($stmt->execute()){
-                if($status == 2){
+            if ($stmt->execute()) {
+                if ($status == 2) {
                     echo json_encode(['status' => 'success', 'message' => 'Appointment accepted successfully!.', 'id' => $appointment_id]);
-                }else{
+                } else {
                     echo json_encode(['status' => 'success', 'message' => 'Appointment declined successfully!.']);
                 }
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
-    function fetch_appointments() {    
+    function fetch_appointments()
+    {
         session_start();
         $practitioner_id = $_SESSION['id'];
-    
+
         $sql = "SELECT * FROM appointments 
                 WHERE status = 2 
                 AND practitioner_id = ?";
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param('i', $practitioner_id);
-    
+
         if ($stmt->execute()) {
             $result = $stmt->get_result();
             $appointments = [];
-    
+
             while ($row = $result->fetch_assoc()) {
                 $appointments[] = [
                     'event_id' => $row['id'],
                     'title' => $row['fname'] . ($row['mname'] ? ' ' . $row['mname'] : '') . ' ' . $row['lname'],
                     'start' => $row['appointment_date'] . 'T' . $row['appointment_time'],
                     'end' => $row['appointment_date'] . 'T' . $row['appointment_time'],
-                    'color' => '#28a745', 
+                    'color' => '#28a745',
                     'service' => $this->getService($row['service']),
                 ];
             }
-    
+
             echo json_encode(['data' => $appointments]);
         } else {
             echo json_encode(['error' => 'Failed to fetch appointments.']);
         }
-    
+
         $stmt->close();
     }
 
-    function getService($service){
-        switch($service){
+    function getService($service)
+    {
+        switch ($service) {
             case 0:
                 return 'Physical Therapy';
             case 1:
@@ -607,13 +626,14 @@ Class Controller {
                 return 'Caregiving Service (24-hour shift)';
             case 4:
                 return 'Nursing Home';
-            default: 
+            default:
                 return 'No selected yet.';
         }
     }
 
-    function delete_appointment(){
-        try{
+    function delete_appointment()
+    {
+        try {
             extract($_POST);
 
             $sql = "DELETE FROM appointments WHERE id = ?";
@@ -621,22 +641,22 @@ Class Controller {
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("i", $appointment_id);
 
-            if($stmt->execute()){
+            if ($stmt->execute()) {
                 echo json_encode(['status' => 'success', 'message' => 'Appointment deleted successfully!.']);
-            }else{
+            } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: '.$e]);
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
-    
-    function logout(){
+
+    function logout()
+    {
         session_start();
         session_destroy();
 
-        header("location: ../login.php");
+        header("location: ../index.php");
         exit;
     }
 }
-?>

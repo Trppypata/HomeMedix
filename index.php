@@ -1,21 +1,22 @@
 <?php
 session_start();
-if(isset($_SESSION['role'])){
+if (isset($_SESSION['role'])) {
     echo $_SESSION['role'];
-    if($_SESSION['role'] == 0){
-        header("location: ./admin/admin_dashboard.php");
+    if ($_SESSION['role'] == 0) {
+        header("location: ./admin/Admin_Dashboard.php");
         exit;
-    }else if($_SESSION['role'] == 1){
+    } else if ($_SESSION['role'] == 1) {
         header("location: ./user/LandingPage.php");
         exit;
-    }else if($_SESSION['role'] == 2 || $_SESSION['role'] == 3){
-        header("location: ./practitioner/practitioner_dashboard.php");
+    } else if ($_SESSION['role'] == 2 || $_SESSION['role'] == 3) {
+        header("location: ./practitioner/Practitioner_dashboard.php");
         exit;
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,11 +24,12 @@ if(isset($_SESSION['role'])){
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./Login.css">
+    <link rel="stylesheet" href="./login.css">
     <title>Login - HomeMedix</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
@@ -36,8 +38,8 @@ if(isset($_SESSION['role'])){
             </a>
             <div class="d-flex">
                 <div class="navbar-nav">
-                    <a class="nav-link" aria-current="page" href="Login.php">Log In</a>
-                    <a class="nav-link" href="SignUp.php">Sign Up</a>
+                    <a class="nav-link" aria-current="page" href="index.php">Log In</a>
+                    <a class="nav-link" href="signup.php">Sign Up</a>
                 </div>
             </div>
         </div>
@@ -56,9 +58,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #38b6ff;">HomeMedix</h3>
             <h3 style="background-color: #004AAD;">HomeMedix</h3>
             <h3 style="background-color: #5271ff;">HomeMedix</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 65px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 65px;">
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
@@ -70,9 +72,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 130px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 130px;">
             <h3 style="background-color: #004AAD;">Physical Therapy</h3>
             <h3 style="background-color: #5271ff;">Physical Therapy</h3>
             <h3 style="background-color: #38b6ff;">Physical Therapy</h3>
@@ -84,9 +86,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #38b6ff;">Physical Therapy</h3>
             <h3 style="background-color: #004AAD;">Physical Therapy</h3>
             <h3 style="background-color: #5271ff;">Physical Therapy</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 195px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 195px;">
             <h3 style="background-color: #0097b2;">Hope & Heal</h3>
             <h3 style="background-color: #0cc0df;">Hope & Heal</h3>
             <h3 style="background-color: #5ce1e6;">Hope & Heal</h3>
@@ -98,9 +100,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #5ce1e6;">Hope & Heal</h3>
             <h3 style="background-color: #0097b2;">Hope & Heal</h3>
             <h3 style="background-color: #0cc0df;">Hope & Heal</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 260px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 260px;">
             <h3 style="background-color: #004AAD;">Caregiving</h3>
             <h3 style="background-color: #5271ff;">Caregiving</h3>
             <h3 style="background-color: #38b6ff;">Caregiving</h3>
@@ -112,9 +114,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #38b6ff;">Caregiving</h3>
             <h3 style="background-color: #004AAD;">Caregiving</h3>
             <h3 style="background-color: #5271ff;">Caregiving</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 325px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 325px;">
             <h3 style="background-color: #0097b2;">Caring Heart</h3>
             <h3 style="background-color: #0cc0df;">Caring Heart</h3>
             <h3 style="background-color: #5ce1e6;">Caring Heart</h3>
@@ -126,9 +128,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #5ce1e6;">Caring Heart</h3>
             <h3 style="background-color: #0097b2;">Caring Heart</h3>
             <h3 style="background-color: #0cc0df;">Caring Heart</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 390px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 390px;">
             <h3 style="background-color: #004AAD;">Nursing Home</h3>
             <h3 style="background-color: #5271ff;">Nursing Home</h3>
             <h3 style="background-color: #38b6ff;">Nursing Home</h3>
@@ -140,9 +142,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #38b6ff;">Nursing Home</h3>
             <h3 style="background-color: #004AAD;">Nursing Home</h3>
             <h3 style="background-color: #5271ff;">Nursing Home</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 455px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 455px;">
             <h3 style="background-color: #0097b2;">Strength regained</h3>
             <h3 style="background-color: #0cc0df;">Strength regained</h3>
             <h3 style="background-color: #5ce1e6;">Strength regained</h3>
@@ -154,9 +156,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #5ce1e6;">Strength regained</h3>
             <h3 style="background-color: #0097b2;">Strength regained</h3>
             <h3 style="background-color: #0cc0df;">Strength regained</h3>
-         </div>
-    
-         <div class="marquee-left" style="margin-top: 520px;">
+        </div>
+
+        <div class="marquee-left" style="margin-top: 520px;">
             <h3 style="background-color: #004AAD;">HomeMedix</h3>
             <h3 style="background-color: #5271ff;">HomeMedix</h3>
             <h3 style="background-color: #38b6ff;">HomeMedix</h3>
@@ -168,9 +170,9 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #38b6ff;">HomeMedix</h3>
             <h3 style="background-color: #004AAD;">HomeMedix</h3>
             <h3 style="background-color: #5271ff;">HomeMedix</h3>
-         </div>
-    
-         <div class="marquee-right"  style="margin-top: 585px;">
+        </div>
+
+        <div class="marquee-right" style="margin-top: 585px;">
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
@@ -182,7 +184,7 @@ if(isset($_SESSION['role'])){
             <h3 style="background-color: #5ce1e6;">We Care Like Family</h3>
             <h3 style="background-color: #0097b2;">We Care Like Family</h3>
             <h3 style="background-color: #0cc0df;">We Care Like Family</h3>
-         </div>
+        </div>
     </div>
 
     <div class="container-fluid">
@@ -214,8 +216,8 @@ if(isset($_SESSION['role'])){
                         <button type="submit" class="btn btn-primary">Login</button>
                     </div>
                 </form>
-                <div class="text-container"> 
-                    <p>No Account yet? <a href="SignUp.php"><span class="blue">Sign Up</span></a></p>
+                <div class="text-container">
+                    <p>No Account yet? <a href="signup.php"><span class="blue">Sign Up</span></a></p>
                 </div>
             </div>
             <div class="col-md-6 d-flex justify-content-center">
@@ -226,12 +228,12 @@ if(isset($_SESSION['role'])){
 
 </body>
 <script>
-     $('#login-form').submit(function(e){
+    $('#login-form').submit(function(e) {
         e.preventDefault()
         $.ajax({
-            url:'backend/ajax.php?action=login',
-			method:'POST',
-			data:$(this).serialize(),
+            url: 'backend/ajax.php?action=login',
+            method: 'POST',
+            data: $(this).serialize(),
             beforeSend: function() {
                 Swal.fire({
                     icon: "info",
@@ -243,18 +245,18 @@ if(isset($_SESSION['role'])){
                     }
                 });
             },
-            success:function(resp){
+            success: function(resp) {
                 console.log(resp)
                 resp = JSON.parse(resp)
-                if(resp.status === 'error') {
+                if (resp.status === 'error') {
                     Swal.fire({
                         icon: 'error',
                         text: resp.message,
                         heightAuto: false
                     });
-                } else if(resp.status === 'success') {
+                } else if (resp.status === 'success') {
                     window.location.reload();
-                } else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops something went wrong.',
@@ -262,24 +264,24 @@ if(isset($_SESSION['role'])){
                     });
                 }
             },
-        }) 
+        })
     })
 
-    <?php if (isset($_SESSION['flash-msg'])) { 
+    <?php if (isset($_SESSION['flash-msg'])) {
         if ($_SESSION['flash-msg'] == 'verified') { ?>
             Swal.fire({
                 icon: 'success',
                 text: 'Account Verified!. You may now login.',
                 heightAuto: false
             });
-    <?php 
+        <?php
         } else if ($_SESSION['flash-msg'] == 'account-not-found') { ?>
             Swal.fire({
                 icon: 'error',
                 text: 'Account Not Found!. Please register first.',
                 heightAuto: false
             });
-    <?php 
+        <?php
         } else { ?>
             Swal.fire({
                 icon: 'error',
@@ -287,9 +289,10 @@ if(isset($_SESSION['role'])){
                 text: 'Something went wrong.',
                 heightAuto: false
             });
-    <?php 
-        } 
+    <?php
+        }
         unset($_SESSION['flash-msg']);
     } ?>
 </script>
+
 </html>
