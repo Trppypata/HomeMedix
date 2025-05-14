@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'hello': 'Hello! Welcome to HomeMedix. How can I help you today?',
         'hi': 'Hi there! Welcome to HomeMedix. How can I help you today?',
         'services': 'HomeMedix offers three main services: Physical Therapy, Caregiving Services (8/12/24-hour shifts), and Nursing Home services. Which one would you like to know more about?',
-        'physical therapy': 'Our Physical Therapy services help patients regain mobility, reduce pain, and improve overall physical function. Our therapists are experts in rehabilitation for injuries, surgeries, and chronic conditions.',
+        'physical therapy': 'Our Physical Therapy services help patients regain mobility, reduce pain, and improve overall physical function. Our therapists are experts in rehabilitation for injuries, surgeries, and chronic conditions. We treat conditions like low back pain, stroke, spinal cord injury, frozen shoulder, osteoarthritis, and more.',
         'caregiving': 'Our Caregiving Services provide compassionate in-home care with options for 8-hour, 12-hour, or 24-hour shifts. Our caregivers assist with daily activities, medication reminders, and provide companionship.',
         'nursing home': 'Our Nursing Home service provides 24/7 professional nursing care in a comfortable facility for patients who need continuous medical attention and assistance.',
         'headache': 'Headaches can have many causes including stress, dehydration, or underlying medical conditions. If you\'re experiencing persistent headaches, our Physical Therapy services might help. Would you like to schedule a consultation?',
@@ -21,7 +21,55 @@ document.addEventListener('DOMContentLoaded', function() {
         'caregiver': 'Our caregivers are trained professionals who undergo background checks and receive ongoing education in patient care, safety protocols, and emergency response.',
         'recovery': 'Recovery time varies based on your condition, overall health, and adherence to treatment plans. During your initial assessment, your healthcare provider will discuss expected recovery timelines.',
         'help': 'I can provide information about our services, answer questions about symptoms, help with appointments, or tell you more about HomeMedix. What would you like to know?',
-        'about': 'HomeMedix is a healthcare provider specializing in Physical Therapy, Caregiving, and Nursing Home services. We\'ve been serving the Metro Manila area since 2015 with our mission to provide compassionate, high-quality care.'
+        'about': 'HomeMedix is a healthcare provider specializing in Physical Therapy, Caregiving, and Nursing Home services. We\'ve been serving the Metro Manila area since 2015 with our mission to provide compassionate, high-quality care.',
+        
+        // Additional detailed service responses
+        'low back pain': 'Our Physical Therapy service for Low Back Pain includes Hot Moist Pack therapy, which uses heat and moisture to relieve pain and relax muscles in the lower back. We also offer exercise programs, manual therapy, and education on proper posture and body mechanics.',
+        'stroke': 'For stroke patients, we offer Proprioceptive Neuromuscular Facilitation (PNF) exercises that involve stretching and strengthening techniques to improve motor function and coordination. Our rehabilitation program is tailored to each patient\'s specific needs and recovery stage.',
+        'spinal cord injury': 'Our spinal cord injury therapy includes bed mobility exercises designed to enhance movement and independence. We work closely with patients to improve strength, flexibility, and functional abilities while preventing complications.',
+        'frozen shoulder': 'For frozen shoulder treatment, we use joint mobilization techniques that involve moving the shoulder joint in specific ways to improve range of motion and reduce stiffness. We complement this with targeted exercises and pain management strategies.',
+        'deconditioning': 'Our therapy for deconditioning includes strengthening and endurance exercises aimed at rebuilding muscle strength and cardiovascular endurance following a period of inactivity. We create personalized programs that gradually increase intensity as your condition improves.',
+        'pneumonia': 'For pneumonia recovery, we offer chest tapping and postural drainage techniques to clear mucus from the lungs. These respiratory therapies help improve breathing capacity and prevent complications.',
+        'heart attack': 'After a myocardial infarction (heart attack), we provide carefully designed endurance exercises to improve cardiovascular health. Our cardiac rehabilitation program follows medical guidelines to ensure safe and effective recovery.',
+        'myocardial infarction': 'Our cardiac rehabilitation for myocardial infarction patients includes low to moderate-intensity physical activities designed to improve cardiovascular health and endurance. We monitor vital signs throughout therapy sessions for safety.',
+        'vascular': 'For peripheral vascular diseases, we offer ambulation (walking) exercises that promote circulation and improve blood flow. These exercises are designed to increase walking distance and reduce symptoms like pain and fatigue.',
+        'peripheral vascular': 'Our therapy for peripheral vascular diseases includes walking exercises that promote circulation and improve blood flow. We also provide education on lifestyle modifications to improve vascular health.',
+        'carpal tunnel': 'For Carpal Tunnel Syndrome, we use ultrasound and TENS (Transcutaneous Electrical Nerve Stimulation) therapy to alleviate pain and promote healing in the wrist. We also teach exercises to improve wrist flexibility and strength.',
+        'osteoarthritis': 'Our osteoarthritis treatment includes Closed Kinematic Chain exercises, which are weight-bearing exercises that strengthen muscles around affected joints while minimizing stress. We also provide joint protection education and pain management strategies.',
+        'arthritis': 'For arthritis, we offer a comprehensive approach including pain management, joint protection techniques, and specialized exercise programs. Our goal is to reduce pain and improve function in everyday activities.',
+        
+        // Detailed caregiving responses
+        '8 hour': 'Our 8-hour caregiving shift provides personal care and assistance for a standard 8-hour period. This service is ideal for individuals who need help during the day or night with daily activities such as bathing, grooming, and meal preparation.',
+        '8-hour': 'Our 8-hour caregiving shift provides personal care and assistance for a standard 8-hour period. This service is ideal for individuals who need help during the day or night with daily activities such as bathing, grooming, and meal preparation.',
+        '12 hour': 'Our 12-hour caregiving shift offers extended support and care, ideal for individuals who need assistance for a longer duration. Caregivers work for 12 hours at a time, providing continuous monitoring and helping with more complex tasks.',
+        '12-hour': 'Our 12-hour caregiving shift offers extended support and care, ideal for individuals who need assistance for a longer duration. Caregivers work for 12 hours at a time, providing continuous monitoring and helping with more complex tasks.',
+        '24 hour': 'Our 24-hour caregiving service provides round-the-clock care for a full day. This comprehensive service ensures that individuals receive constant support, supervision, and assistance with all daily living activities. It\'s ideal for those requiring continuous care.',
+        '24-hour': 'Our 24-hour caregiving service provides round-the-clock care for a full day. This comprehensive service ensures that individuals receive constant support, supervision, and assistance with all daily living activities. It\'s ideal for those requiring continuous care.',
+        
+        // Nursing home detailed response
+        'nursing care': 'Our Nursing Care service includes licensed nurses providing comprehensive healthcare including assessment, planning, intervention, evaluation, and emotional support tailored to patients\' needs. We offer 24/7 professional supervision in a comfortable facility.',
+        'nurse': 'Our nursing services are provided by licensed professionals who offer comprehensive healthcare including medication management, wound care, vital signs monitoring, and coordination with doctors. We provide both in-home nursing and facility-based nursing home care.',
+        
+        // Additional symptom/condition responses
+        'diabetes': 'For patients with diabetes, we offer specialized care including monitoring blood sugar levels, medication management, wound care for diabetic foot conditions, and education on lifestyle modifications. Both our nursing and caregiving services can support diabetic patients.',
+        'alzheimer': 'We provide specialized care for Alzheimer\'s patients through our caregiving and nursing home services. Our trained staff understands the unique challenges of dementia care and creates safe, supportive environments while providing cognitive stimulation activities.',
+        'dementia': 'Our dementia care services include specialized caregiving and nursing support designed to maintain quality of life, ensure safety, and provide appropriate cognitive and social stimulation. We train our staff in the latest dementia care approaches.',
+        'parkinson': 'For Parkinson\'s disease, we offer specialized physical therapy to improve mobility, balance, and coordination. Our caregivers are also trained to assist with the unique challenges Parkinson\'s patients face in daily activities.',
+        'cancer': 'We provide supportive care for cancer patients through our caregiving and nursing services. This includes assistance during treatment recovery, pain management, nutritional support, and emotional care for both patients and families.',
+        'rehabilitation': 'Our rehabilitation services are comprehensive and personalized, addressing physical, cognitive, and functional abilities. Whether recovering from surgery, injury, or illness, we develop targeted programs to help patients regain independence.',
+        'covid': 'We offer specialized care for COVID-19 recovery, including respiratory therapy, strength rebuilding, and monitoring for long-term effects. Our staff follows strict infection control protocols to ensure safety.',
+        'respiratory': 'Our respiratory care includes breathing exercises, chest physical therapy, and oxygen therapy monitoring. We work with patients who have COPD, asthma, pneumonia, and other respiratory conditions.',
+        'wound care': 'We provide professional wound care services through our nursing team, including cleaning, dressing changes, infection prevention, and monitoring healing progress. This is available in both our in-home and facility-based care.',
+        'mobility': 'Our mobility assistance services help patients who have difficulty walking or moving. We provide gait training, transfer assistance, and education on using mobility aids like walkers and wheelchairs.',
+        'pain management': 'Our pain management approach combines physical therapy techniques, proper positioning, exercise, and coordination with medical professionals for medication management when necessary.',
+        
+        // Payment and logistics questions
+        'payment': 'We accept various payment methods including cash, credit cards, bank transfers, and select insurance plans. For long-term care arrangements, we can discuss monthly payment plans.',
+        'booking': 'Booking a service is simple! You can use our online appointment system on our website, call us directly at 0917 102 8250, or visit one of our locations in person.',
+        'cancel': 'To cancel or reschedule an appointment, please contact us at least 24 hours in advance by phone or email. We understand that circumstances change and we're flexible with rescheduling.',
+        'home visit': 'Yes, we offer home visits for all our physical therapy and caregiving services. Our professionals will come to your location with all necessary equipment to provide quality care in the comfort of your home.',
+        'emergency': 'For medical emergencies, please call 911 immediately. For urgent but non-emergency situations related to our services, you can reach our 24/7 support line at 0917 102 8250.',
+        'covid protocol': 'We follow strict COVID-19 safety protocols including regular staff testing, proper PPE usage, symptom screening, and adherence to DOH guidelines. The safety of our clients and staff is our top priority.'
     };
 
     // Default response for unrecognized queries
