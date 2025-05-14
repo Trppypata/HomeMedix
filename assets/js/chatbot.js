@@ -1,13 +1,32 @@
-// HomeMedix Chatbot
 document.addEventListener('DOMContentLoaded', function() {
+    // Conversation memory to track context
+    let conversationContext = {
+        lastTopic: null,
+        mentionedServices: [],
+        userPreferences: {},
+        appointmentInterest: false
+    };
+    
     // Predefined responses based on keywords
     const responses = {
         'hello': 'Hello! Welcome to HomeMedix. How can I help you today?',
         'hi': 'Hi there! Welcome to HomeMedix. How can I help you today?',
-        'services': 'HomeMedix offers three main services: Physical Therapy, Caregiving Services (8/12/24-hour shifts), and Nursing Home services. Which one would you like to know more about?',
-        'physical therapy': 'Our Physical Therapy services help patients regain mobility, reduce pain, and improve overall physical function. Our therapists are experts in rehabilitation for injuries, surgeries, and chronic conditions. We treat conditions like low back pain, stroke, spinal cord injury, frozen shoulder, osteoarthritis, and more.',
-        'caregiving': 'Our Caregiving Services provide compassionate in-home care with options for 8-hour, 12-hour, or 24-hour shifts. Our caregivers assist with daily activities, medication reminders, and provide companionship.',
-        'nursing home': 'Our Nursing Home service provides 24/7 professional nursing care in a comfortable facility for patients who need continuous medical attention and assistance.',
+        'services': {
+            message: 'HomeMedix offers three main services: Physical Therapy, Caregiving Services (8/12/24-hour shifts), and Nursing Home services. Which one would you like to know more about?',
+            suggestions: ['Tell me about Physical Therapy', 'Tell me about Caregiving', 'Tell me about Nursing Home']
+        },
+        'physical therapy': {
+            message: 'Our Physical Therapy services help patients regain mobility, reduce pain, and improve overall physical function. Our therapists are experts in rehabilitation for injuries, surgeries, and chronic conditions. We treat conditions like low back pain, stroke, spinal cord injury, frozen shoulder, osteoarthritis, and more.',
+            suggestions: ['What conditions do you treat?', 'How much does physical therapy cost?', 'Do you do home visits?']
+        },
+        'caregiving': {
+            message: 'Our Caregiving Services provide compassionate in-home care with options for 8-hour, 12-hour, or 24-hour shifts. Our caregivers assist with daily activities, medication reminders, and provide companionship.',
+            suggestions: ['Tell me about 8-hour shifts', 'Tell me about 24-hour care', 'How are caregivers selected?']
+        },
+        'nursing home': {
+            message: 'Our Nursing Home service provides 24/7 professional nursing care in a comfortable facility for patients who need continuous medical attention and assistance.',
+            suggestions: ['What facilities do you have?', 'What is the cost?', 'Can I visit anytime?']
+        },
         'headache': 'Headaches can have many causes including stress, dehydration, or underlying medical conditions. If you\'re experiencing persistent headaches, our Physical Therapy services might help. Would you like to schedule a consultation?',
         'back pain': 'Back pain is a common condition that our Physical Therapists specialize in treating. We offer personalized treatment plans that include exercises, manual therapy, and education to reduce pain and improve function.',
         'elderly care': 'For elderly care, we offer both Caregiving Services for in-home support and Nursing Home options for 24/7 professional care. The best choice depends on the level of medical attention needed.',
@@ -66,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Payment and logistics questions
         'payment': 'We accept various payment methods including cash, credit cards, bank transfers, and select insurance plans. For long-term care arrangements, we can discuss monthly payment plans.',
         'booking': 'Booking a service is simple! You can use our online appointment system on our website, call us directly at 0917 102 8250, or visit one of our locations in person.',
-        'cancel': 'To cancel or reschedule an appointment, please contact us at least 24 hours in advance by phone or email. We understand that circumstances change and we're flexible with rescheduling.',
+        'cancel': 'To cancel or reschedule an appointment, please contact us at least 24 hours in advance by phone or email. We understand that circumstances change and we\'re flexible with rescheduling.',
         'home visit': 'Yes, we offer home visits for all our physical therapy and caregiving services. Our professionals will come to your location with all necessary equipment to provide quality care in the comfort of your home.',
         'emergency': 'For medical emergencies, please call 911 immediately. For urgent but non-emergency situations related to our services, you can reach our 24/7 support line at 0917 102 8250.',
         'covid protocol': 'We follow strict COVID-19 safety protocols including regular staff testing, proper PPE usage, symptom screening, and adherence to DOH guidelines. The safety of our clients and staff is our top priority.'
@@ -200,6 +219,12 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             addBotMessage("Hello! I'm your HomeMedix virtual assistant. How can I help you today?");
             addBotMessage("You can ask me about our services, locations, or specific health concerns.");
+            addSuggestedQuestions([
+                "What services do you offer?",
+                "How much does physical therapy cost?",
+                "Where are your locations?",
+                "How do I book an appointment?"
+            ]);
         }, 500);
     });
     
@@ -257,38 +282,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to get bot response based on user message
     async function getBotResponse(userMessage) {
-        const messageLower = userMessage.toLowerCase();
+        const messageLower = userMessage.toLowerCase().trim();
+        
+        // Helper function to check if any keywords are in the message
+        function containsAny(message, keywords) {
+            return keywords.some(keyword => message.includes(keyword));
+        }
         
         // Check for specific service queries
-        if (messageLower.includes('physical therapy') || messageLower.includes('pt')) {
+        if (containsAny(messageLower, ['physical therapy', 'pt', 'physiotherapy', 'physical therapist'])) {
             const service = await fetchData('services', 'Physical Therapy');
             return formatServiceResponse(service);
         }
         
-        if (messageLower.includes('caregiving') || messageLower.includes('caregiver')) {
+        if (containsAny(messageLower, ['caregiving', 'caregiver', 'care giver', 'home care'])) {
             const service = await fetchData('services', 'Caregiving Services');
             return formatServiceResponse(service);
         }
         
-        if (messageLower.includes('nursing home') || messageLower.includes('nursing')) {
+        if (containsAny(messageLower, ['nursing home', 'nursing', 'nurse', 'nursing care'])) {
             const service = await fetchData('services', 'Nursing Home');
             return formatServiceResponse(service);
         }
 
         // Check for specific illness queries
-        if (messageLower.includes('back pain') || messageLower.includes('backache')) {
+        if (containsAny(messageLower, ['back pain', 'backache', 'lower back', 'lumbar pain'])) {
             const illness = await fetchData('illnesses', 'Back Pain');
             return formatIllnessResponse(illness);
         }
         
-        if (messageLower.includes('stroke')) {
+        if (containsAny(messageLower, ['stroke', 'brain attack', 'cerebrovascular'])) {
             const illness = await fetchData('illnesses', 'Stroke Recovery');
             return formatIllnessResponse(illness);
         }
         
-        if (messageLower.includes('arthritis')) {
+        if (containsAny(messageLower, ['arthritis', 'joint pain', 'rheumatism', 'joint inflammation'])) {
             const illness = await fetchData('illnesses', 'Arthritis');
             return formatIllnessResponse(illness);
+        }
+        
+        if (containsAny(messageLower, ['frozen shoulder', 'adhesive capsulitis', 'shoulder pain', 'shoulder stiffness'])) {
+            return responses['frozen shoulder'];
+        }
+        
+        if (containsAny(messageLower, ['spinal cord injury', 'spinal injury', 'spine trauma', 'spinal damage'])) {
+            return responses['spinal cord injury'];
+        }
+        
+        if (containsAny(messageLower, ['deconditioning', 'weak muscles', 'muscle loss', 'weakness after illness'])) {
+            return responses['deconditioning'];
+        }
+        
+        if (containsAny(messageLower, ['pneumonia', 'lung infection', 'chest infection'])) {
+            return responses['pneumonia'];
+        }
+        
+        if (containsAny(messageLower, ['heart attack', 'myocardial infarction', 'cardiac', 'heart problem'])) {
+            return responses['myocardial infarction'];
+        }
+        
+        if (containsAny(messageLower, ['peripheral vascular', 'vascular disease', 'poor circulation', 'blood vessel disease'])) {
+            return responses['peripheral vascular'];
+        }
+        
+        if (containsAny(messageLower, ['carpal tunnel', 'wrist pain', 'hand numbness', 'median nerve'])) {
+            return responses['carpal tunnel'];
         }
 
         // Check for general service queries
@@ -328,29 +386,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return defaultResponse;
     }
 
-    // Update the handleUserMessage function to be async
-    const handleUserMessage = async () => {
-        const userMessage = chatInput.value.trim();
-        if (!userMessage) return;
-        
-        // Add user message to chat
-        addUserMessage(userMessage);
-        chatInput.value = '';
-        
-        // Process user message and get response
-        setTimeout(async () => {
-            const botResponse = await getBotResponse(userMessage);
-            addBotMessage(botResponse);
-        }, 500);
-    };
-    
-    chatSendButton.addEventListener('click', handleUserMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handleUserMessage();
-        }
-    });
-    
     // Function to add user message to chat
     function addUserMessage(message) {
         const messageElement = document.createElement('div');
@@ -388,4 +423,232 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+    
+    // Function to show typing indicator
+    function showTypingIndicator() {
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+        typingIndicator.style.cssText = `
+            align-self: flex-start;
+            background-color: #E1E1E1;
+            padding: 12px 20px;
+            border-radius: 18px 18px 18px 0;
+            margin: 5px 0;
+            width: 50px;
+            display: flex;
+            justify-content: center;
+        `;
+        
+        typingIndicator.querySelector('span:nth-child(1)').style.cssText = `
+            background-color: #666;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.3s infinite ease-in-out;
+            animation-delay: 0s;
+        `;
+        
+        typingIndicator.querySelector('span:nth-child(2)').style.cssText = `
+            background-color: #666;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.3s infinite ease-in-out;
+            animation-delay: 0.2s;
+        `;
+        
+        typingIndicator.querySelector('span:nth-child(3)').style.cssText = `
+            background-color: #666;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.3s infinite ease-in-out;
+            animation-delay: 0.4s;
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes typing {
+                0% { transform: translateY(0px); }
+                25% { transform: translateY(-4px); }
+                50% { transform: translateY(0px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        chatMessages.appendChild(typingIndicator);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        return typingIndicator;
+    }
+    
+    // Function to remove typing indicator
+    function removeTypingIndicator(indicator) {
+        if (indicator && indicator.parentNode) {
+            indicator.parentNode.removeChild(indicator);
+        }
+    }
+    
+    // Function to add suggested questions for the user
+    function addSuggestedQuestions(questions) {
+        const suggestionsContainer = document.createElement('div');
+        suggestionsContainer.className = 'suggestions-container';
+        suggestionsContainer.style.cssText = `
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+            width: 100%;
+        `;
+        
+        questions.forEach(question => {
+            const suggestionButton = document.createElement('button');
+            suggestionButton.className = 'suggestion-btn';
+            suggestionButton.textContent = question;
+            suggestionButton.style.cssText = `
+                background-color: #e6f0ff;
+                color: #004AAD;
+                border: 1px solid #004AAD;
+                border-radius: 16px;
+                padding: 6px 12px;
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            `;
+            
+            suggestionButton.addEventListener('mouseenter', () => {
+                suggestionButton.style.backgroundColor = '#004AAD';
+                suggestionButton.style.color = 'white';
+            });
+            
+            suggestionButton.addEventListener('mouseleave', () => {
+                suggestionButton.style.backgroundColor = '#e6f0ff';
+                suggestionButton.style.color = '#004AAD';
+            });
+            
+            suggestionButton.addEventListener('click', () => {
+                chatInput.value = question;
+                handleUserMessage();
+            });
+            
+            suggestionsContainer.appendChild(suggestionButton);
+        });
+        
+        chatMessages.appendChild(suggestionsContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Function to update conversation context
+    function updateConversationContext(userMessage) {
+        const messageLower = userMessage.toLowerCase();
+        
+        // Track the last topic discussed
+        if (messageLower.includes('physical therapy') || messageLower.includes('pt')) {
+            conversationContext.lastTopic = 'physical therapy';
+            if (!conversationContext.mentionedServices.includes('physical therapy')) {
+                conversationContext.mentionedServices.push('physical therapy');
+            }
+        } else if (messageLower.includes('caregiving') || messageLower.includes('caregiver')) {
+            conversationContext.lastTopic = 'caregiving';
+            if (!conversationContext.mentionedServices.includes('caregiving')) {
+                conversationContext.mentionedServices.push('caregiving');
+            }
+        } else if (messageLower.includes('nursing home') || messageLower.includes('nursing')) {
+            conversationContext.lastTopic = 'nursing home';
+            if (!conversationContext.mentionedServices.includes('nursing home')) {
+                conversationContext.mentionedServices.push('nursing home');
+            }
+        }
+        
+        // Track appointment interest
+        if (messageLower.includes('appointment') || messageLower.includes('book') || 
+            messageLower.includes('schedule') || messageLower.includes('visit')) {
+            conversationContext.appointmentInterest = true;
+        }
+        
+        // Track other user preferences
+        if (messageLower.includes('home visit') || messageLower.includes('at home')) {
+            conversationContext.userPreferences.homeVisit = true;
+        }
+        
+        if (messageLower.includes('urgent') || messageLower.includes('emergency') || 
+            messageLower.includes('as soon as possible')) {
+            conversationContext.userPreferences.urgent = true;
+        }
+    }
+    
+    // Update the handleUserMessage function to be async
+    const handleUserMessage = async () => {
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
+        
+        // Add user message to chat
+        addUserMessage(userMessage);
+        chatInput.value = '';
+        
+        // Update conversation context
+        updateConversationContext(userMessage);
+        
+        // Show typing indicator
+        const typingIndicator = showTypingIndicator();
+        
+        // Process user message and get response with a realistic delay
+        setTimeout(async () => {
+            // Remove typing indicator
+            removeTypingIndicator(typingIndicator);
+            
+            const response = await getBotResponse(userMessage);
+            
+            // If response is an object with message and suggestions
+            if (typeof response === 'object' && response.message) {
+                addBotMessage(response.message);
+                if (response.suggestions) {
+                    setTimeout(() => {
+                        addSuggestedQuestions(response.suggestions);
+                    }, 300);
+                }
+            } else {
+                // If response is just a string
+                addBotMessage(response);
+                
+                // Add contextual suggestions based on the conversation context
+                if (conversationContext.lastTopic === 'physical therapy') {
+                    setTimeout(() => {
+                        addSuggestedQuestions([
+                            "What conditions do you treat?",
+                            "How much does PT cost?",
+                            "Do you offer home PT visits?"
+                        ]);
+                    }, 300);
+                } else if (conversationContext.lastTopic === 'caregiving') {
+                    setTimeout(() => {
+                        addSuggestedQuestions([
+                            "What are your caregiving hours?", 
+                            "What's included in caregiving service?",
+                            "How much is 24-hour care?"
+                        ]);
+                    }, 300);
+                } else if (conversationContext.appointmentInterest) {
+                    setTimeout(() => {
+                        addSuggestedQuestions([
+                            "How do I book an appointment?",
+                            "What information do I need for booking?",
+                            "Can I reschedule if needed?"
+                        ]);
+                    }, 300);
+                }
+            }
+        }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds for realism
+    };
+    
+    chatSendButton.addEventListener('click', handleUserMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleUserMessage();
+        }
+    });
 }); 
