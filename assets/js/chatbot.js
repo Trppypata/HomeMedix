@@ -160,7 +160,128 @@ document.addEventListener('DOMContentLoaded', function() {
         chatButton.style.display = 'flex';
     });
     
-    const handleUserMessage = () => {
+    // Function to fetch data from the API
+    async function fetchData(type, query = '') {
+        try {
+            const url = query 
+                ? `../backend/chatbot_api.php?action=${type}&query=${encodeURIComponent(query)}`
+                : `../backend/chatbot_api.php?action=${type}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.status === 'success') {
+                return data.data;
+            }
+            return null;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            return null;
+        }
+    }
+
+    // Function to format service response
+    function formatServiceResponse(service) {
+        if (!service) return 'I couldn\'t find information about that service.';
+        
+        let response = `Here's information about our ${service.name}:\n\n`;
+        response += `${service.description}\n\n`;
+        response += `Details:\n${service.details}\n\n`;
+        response += `Duration: ${service.duration}\n`;
+        response += `Price Range: ${service.price_range}\n\n`;
+        response += 'Would you like to know more about any specific aspect of this service?';
+        
+        return response;
+    }
+
+    // Function to format illness response
+    function formatIllnessResponse(illness) {
+        if (!illness) return 'I couldn\'t find information about that condition.';
+        
+        let response = `Here's information about ${illness.name}:\n\n`;
+        response += `${illness.description}\n\n`;
+        response += `Symptoms:\n${illness.symptoms}\n\n`;
+        response += `Treatment:\n${illness.treatment}\n\n`;
+        response += `Prevention:\n${illness.prevention}\n\n`;
+        response += `Related Services: ${illness.related_services}\n\n`;
+        response += 'Would you like to know more about our treatment options for this condition?';
+        
+        return response;
+    }
+
+    // Function to get bot response based on user message
+    async function getBotResponse(userMessage) {
+        const messageLower = userMessage.toLowerCase();
+        
+        // Check for specific service queries
+        if (messageLower.includes('physical therapy') || messageLower.includes('pt')) {
+            const service = await fetchData('services', 'Physical Therapy');
+            return formatServiceResponse(service);
+        }
+        
+        if (messageLower.includes('caregiving') || messageLower.includes('caregiver')) {
+            const service = await fetchData('services', 'Caregiving Services');
+            return formatServiceResponse(service);
+        }
+        
+        if (messageLower.includes('nursing home') || messageLower.includes('nursing')) {
+            const service = await fetchData('services', 'Nursing Home');
+            return formatServiceResponse(service);
+        }
+
+        // Check for specific illness queries
+        if (messageLower.includes('back pain') || messageLower.includes('backache')) {
+            const illness = await fetchData('illnesses', 'Back Pain');
+            return formatIllnessResponse(illness);
+        }
+        
+        if (messageLower.includes('stroke')) {
+            const illness = await fetchData('illnesses', 'Stroke Recovery');
+            return formatIllnessResponse(illness);
+        }
+        
+        if (messageLower.includes('arthritis')) {
+            const illness = await fetchData('illnesses', 'Arthritis');
+            return formatIllnessResponse(illness);
+        }
+
+        // Check for general service queries
+        if (messageLower.includes('service') || messageLower.includes('services')) {
+            const services = await fetchData('services');
+            if (services && services.length > 0) {
+                let response = 'Here are our available services:\n\n';
+                services.forEach(service => {
+                    response += `- ${service.name}: ${service.description}\n`;
+                });
+                response += '\nWould you like to know more about any specific service?';
+                return response;
+            }
+        }
+
+        // Check for general illness queries
+        if (messageLower.includes('illness') || messageLower.includes('condition') || 
+            messageLower.includes('sick') || messageLower.includes('treatment')) {
+            const illnesses = await fetchData('illnesses');
+            if (illnesses && illnesses.length > 0) {
+                let response = 'Here are some conditions we treat:\n\n';
+                illnesses.forEach(illness => {
+                    response += `- ${illness.name}: ${illness.description}\n`;
+                });
+                response += '\nWould you like to know more about any specific condition?';
+                return response;
+            }
+        }
+
+        // Check for predefined responses
+        for (const keyword in responses) {
+            if (messageLower.includes(keyword)) {
+                return responses[keyword];
+            }
+        }
+        
+        return defaultResponse;
+    }
+
+    // Update the handleUserMessage function to be async
+    const handleUserMessage = async () => {
         const userMessage = chatInput.value.trim();
         if (!userMessage) return;
         
@@ -169,8 +290,8 @@ document.addEventListener('DOMContentLoaded', function() {
         chatInput.value = '';
         
         // Process user message and get response
-        setTimeout(() => {
-            const botResponse = getBotResponse(userMessage);
+        setTimeout(async () => {
+            const botResponse = await getBotResponse(userMessage);
             addBotMessage(botResponse);
         }, 500);
     };
@@ -218,19 +339,5 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    
-    // Function to get bot response based on user message
-    function getBotResponse(userMessage) {
-        const messageLower = userMessage.toLowerCase();
-        
-        // Check for keywords in the user message
-        for (const keyword in responses) {
-            if (messageLower.includes(keyword)) {
-                return responses[keyword];
-            }
-        }
-        
-        return defaultResponse;
     }
 }); 

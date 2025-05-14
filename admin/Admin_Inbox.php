@@ -1,9 +1,15 @@
 <?php
 require_once('../backend/function.php');
+require_once('../backend/config.php');
 if(!isset($_SESSION['role']) && $_SESSION['role'] != 0){
   header("location: ../login.php");
   exit;
 }
+
+// Fetch unread notifications
+$notif_sql = "SELECT * FROM admin_notifications WHERE is_read = 0 ORDER BY created_at DESC LIMIT 10";
+$notif_result = $con->query($notif_sql);
+$notif_count = $notif_result ? $notif_result->num_rows : 0;
 ?>
 <html lang="en">
   <head>
@@ -53,13 +59,14 @@ if(!isset($_SESSION['role']) && $_SESSION['role'] != 0){
               <i class="fas fa-calendar"></i>Appointments </a>
           </li>
           <li>
+            <a href="Reports.php">
+              <i class="fas fa-chart-bar"></i>Reports </a>
+          </li>
+          <li>
             <a href="Admin_Inbox.php">
               <i class="fas fa-envelope"></i>Inbox - Contact Us </a>
           </li>
         </ul>
-        <div class="logout-container">
-          <a href="../backend/ajax.php?action=logout" class="ms-3 p-0 w-100"><button class="btn btn-outline-danger btn-logout">Log Out</button></a>
-        </div>
       </div>
 
       <!-- Main Content -->
@@ -68,11 +75,14 @@ if(!isset($_SESSION['role']) && $_SESSION['role'] != 0){
 
             <button class="btn btn-light notification-btn">
                 <span class="material-symbols-outlined">notifications</span>
-                <span class="notification-badge">3</span>
+                <span class="notification-badge"><?= $notif_count ?></span>
             </button>
 
-          <h6>Admin <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span>
-          </h6>
+          <h6 class="mx-2">Admin <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span></h6>
+          
+          <a href="../backend/ajax.php?action=logout" class="btn btn-outline-danger btn-sm ms-3">
+            <i class="fas fa-sign-out-alt"></i> Log Out
+          </a>
         </div>
         <div class="info">
           <div class="container-fluid">
@@ -162,5 +172,32 @@ if(!isset($_SESSION['role']) && $_SESSION['role'] != 0){
     </div>
     </div>
     </div>
+    
+    <div class="notification-dropdown" style="position:absolute;right:60px;top:60px;z-index:1000;background:#fff;border:1px solid #ccc;border-radius:8px;min-width:300px;display:none;">
+      <?php if ($notif_count == 0): ?>
+        <div class="notification-item p-3">No new notifications.</div>
+      <?php else: ?>
+        <?php while ($notif = $notif_result->fetch_assoc()): ?>
+          <div class="notification-item p-3 border-bottom">
+            <strong><?= htmlspecialchars($notif['type']) ?>:</strong>
+            <?= htmlspecialchars($notif['message']) ?><br>
+            <small><?= $notif['created_at'] ?></small>
+          </div>
+        <?php endwhile; ?>
+      <?php endif; ?>
+    </div>
+    
+    <script>
+      // Toggle notification dropdown
+      const notifBtn = document.querySelector('.notification-btn');
+      const notifDropdown = document.querySelector('.notification-dropdown');
+      notifBtn.addEventListener('click', function(e) {
+        notifDropdown.style.display = notifDropdown.style.display === 'block' ? 'none' : 'block';
+        e.stopPropagation();
+      });
+      document.addEventListener('click', function() {
+        notifDropdown.style.display = 'none';
+      });
+    </script>
   </body>
 </html>

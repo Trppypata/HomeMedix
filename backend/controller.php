@@ -399,6 +399,32 @@ class Controller
 
             $user_id = $user_id ?? $_SESSION['id'];
 
+            // Check for overlapping appointments for the patient
+            $check_patient = $this->con->prepare("SELECT COUNT(*) FROM appointments WHERE user_id = ? AND appointment_date = ? AND appointment_time = ? AND status IN (1,2)");
+            $check_patient->bind_param("iss", $user_id, $appointment_date, $appointment_time);
+            $check_patient->execute();
+            $check_patient->bind_result($patient_conflict);
+            $check_patient->fetch();
+            $check_patient->close();
+            if ($patient_conflict > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'You already have an appointment at this date and time.']);
+                return;
+            }
+
+            // If practitioner_id is set (for therapist), check for overlapping appointments
+            if (!empty($practitioner_id)) {
+                $check_therapist = $this->con->prepare("SELECT COUNT(*) FROM appointments WHERE practitioner_id = ? AND appointment_date = ? AND appointment_time = ? AND status = 2");
+                $check_therapist->bind_param("iss", $practitioner_id, $appointment_date, $appointment_time);
+                $check_therapist->execute();
+                $check_therapist->bind_result($therapist_conflict);
+                $check_therapist->fetch();
+                $check_therapist->close();
+                if ($therapist_conflict > 0) {
+                    echo json_encode(['status' => 'error', 'message' => 'The therapist already has an accepted appointment at this date and time.']);
+                    return;
+                }
+            }
+
             if ($status == 0 && empty($fname) && empty($lname) && empty($sex) && empty($bday) && empty($address) && empty($barangay) && empty($city) && empty($zip) && empty($appointment_case) && empty($service) && empty($appointment_date) && empty($appointment_time) && empty($email) && empty($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Please fill at least 1 field to save as draft.']);
                 return;
@@ -477,6 +503,32 @@ class Controller
         try {
             extract($_POST);
 
+            // Check for overlapping appointments for the patient (on update)
+            $check_patient = $this->con->prepare("SELECT COUNT(*) FROM appointments WHERE user_id = ? AND appointment_date = ? AND appointment_time = ? AND status IN (1,2) AND id != ?");
+            $check_patient->bind_param("issi", $user_id, $appointment_date, $appointment_time, $appointment_id);
+            $check_patient->execute();
+            $check_patient->bind_result($patient_conflict);
+            $check_patient->fetch();
+            $check_patient->close();
+            if ($patient_conflict > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'You already have an appointment at this date and time.']);
+                return;
+            }
+
+            // If practitioner_id is set (for therapist), check for overlapping appointments (on update)
+            if (!empty($practitioner_id)) {
+                $check_therapist = $this->con->prepare("SELECT COUNT(*) FROM appointments WHERE practitioner_id = ? AND appointment_date = ? AND appointment_time = ? AND status = 2 AND id != ?");
+                $check_therapist->bind_param("issi", $practitioner_id, $appointment_date, $appointment_time, $appointment_id);
+                $check_therapist->execute();
+                $check_therapist->bind_result($therapist_conflict);
+                $check_therapist->fetch();
+                $check_therapist->close();
+                if ($therapist_conflict > 0) {
+                    echo json_encode(['status' => 'error', 'message' => 'The therapist already has an accepted appointment at this date and time.']);
+                    return;
+                }
+            }
+
             if ($status == 0 && empty($fname) && empty($lname) && empty($sex) && empty($bday) && empty($address) && empty($barangay) && empty($city) && empty($zip) && empty($appointment_case) && empty($service) && empty($appointment_date) && empty($appointment_time) && empty($email) && empty($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Please fill at least 1 field to save as draft.']);
                 return;
@@ -554,11 +606,100 @@ class Controller
         }
     }
 
-    function update_appoinment_status()
+    function update_appointment_status()
     {
         try {
             session_start();
             extract($_POST);
+
+            // For admin users, we don't need to check for conflicts
+            if ($_SESSION['role'] == 0) {
+                // Get user_id from appointment for notification
+                $get_user = $this->con->prepare("SELECT user_id, fname, lname FROM appointments WHERE id = ?");
+                $get_user->bind_param("i", $appointment_id);
+                $get_user->execute();
+                $get_user->bind_result($user_id, $fname, $lname);
+                $get_user->fetch();
+                $get_user->close();
+                
+                $sql = "UPDATE appointments SET status = ? WHERE id = ?";
+                $stmt = $this->con->prepare($sql);
+                $stmt->bind_param("ii", $status, $appointment_id);
+                
+                if ($stmt->execute()) {
+                    $status_text = '';
+                    $notification_message = '';
+                    
+                    switch($status) {
+                        case 1: 
+                            $status_text = 'Pending'; 
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been marked as pending.";
+                            break;
+                        case 2: 
+                            $status_text = 'Accepted'; 
+                            $notification_message = "Good news! Your appointment #" . ($appointment_id + 100) . " has been accepted.";
+                            break;
+                        case 3: 
+                            $status_text = 'Declined'; 
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been declined. Please contact us for more information.";
+                            break;
+                        case 4: 
+                            $status_text = 'Completed'; 
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been marked as completed.";
+                            break;
+                        default: 
+                            $status_text = 'Updated';
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " status has been updated.";
+                    }
+                    
+                    // Create notification for the user
+                    $notif_sql = "INSERT INTO user_notifications (user_id, type, message) VALUES (?, ?, ?)";
+                    $notif_stmt = $this->con->prepare($notif_sql);
+                    $type = 'Appointment Update';
+                    $notif_stmt->bind_param("iss", $user_id, $type, $notification_message);
+                    $notif_stmt->execute();
+                    $notif_stmt->close();
+                    
+                    echo json_encode(['status' => 'success', 'message' => "Appointment marked as $status_text successfully!"]);
+                    return;
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+                    return;
+                }
+            }
+
+            // For practitioners - keep existing conflict checking logic
+            // Get appointment details
+            $stmt = $this->con->prepare("SELECT user_id, appointment_date, appointment_time FROM appointments WHERE id = ?");
+            $stmt->bind_param("i", $appointment_id);
+            $stmt->execute();
+            $stmt->bind_result($user_id, $appointment_date, $appointment_time);
+            $stmt->fetch();
+            $stmt->close();
+
+            // Check for overlapping accepted appointments for the patient
+            $check_patient = $this->con->prepare("SELECT COUNT(*) FROM appointments WHERE user_id = ? AND appointment_date = ? AND appointment_time = ? AND status = 2 AND id != ?");
+            $check_patient->bind_param("issi", $user_id, $appointment_date, $appointment_time, $appointment_id);
+            $check_patient->execute();
+            $check_patient->bind_result($patient_conflict);
+            $check_patient->fetch();
+            $check_patient->close();
+            if ($patient_conflict > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'The patient already has an accepted appointment at this date and time.']);
+                return;
+            }
+
+            // Check for overlapping accepted appointments for the therapist
+            $check_therapist = $this->con->prepare("SELECT COUNT(*) FROM appointments WHERE practitioner_id = ? AND appointment_date = ? AND appointment_time = ? AND status = 2 AND id != ?");
+            $check_therapist->bind_param("issi", $_SESSION['id'], $appointment_date, $appointment_time, $appointment_id);
+            $check_therapist->execute();
+            $check_therapist->bind_result($therapist_conflict);
+            $check_therapist->fetch();
+            $check_therapist->close();
+            if ($therapist_conflict > 0) {
+                echo json_encode(['status' => 'error', 'message' => 'You already have an accepted appointment at this date and time.']);
+                return;
+            }
 
             $sql = "UPDATE appointments SET practitioner_id = ?, status = ? WHERE id = ?";
 
@@ -643,6 +784,53 @@ class Controller
 
             if ($stmt->execute()) {
                 echo json_encode(['status' => 'success', 'message' => 'Appointment deleted successfully!.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+            }
+        } catch (mysqli_sql_exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
+        }
+    }
+
+    function get_appointment_details()
+    {
+        try {
+            extract($_POST);
+            
+            $sql = "SELECT * FROM appointments WHERE id = ?";
+            
+            $stmt = $this->con->prepare($sql);
+            $stmt->bind_param("i", $appointment_id);
+            
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    $appointment = $result->fetch_assoc();
+                    echo json_encode(['status' => 'success', 'data' => $appointment]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Appointment not found.']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+            }
+        } catch (mysqli_sql_exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
+        }
+    }
+
+    function mark_notifications_read()
+    {
+        try {
+            session_start();
+            $user_id = $_SESSION['id'];
+            
+            $sql = "UPDATE user_notifications SET is_read = 1 WHERE user_id = ?";
+            
+            $stmt = $this->con->prepare($sql);
+            $stmt->bind_param("i", $user_id);
+            
+            if ($stmt->execute()) {
+                echo json_encode(['status' => 'success', 'message' => 'All notifications marked as read.']);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }

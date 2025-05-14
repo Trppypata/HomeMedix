@@ -52,8 +52,8 @@ if($action == 'update_appointment'){
 		echo $response;
 }
 
-if($action == 'update_appoinment_status'){
-	$response = $controller->update_appoinment_status();
+if($action == 'update_appointment_status'){
+	$response = $controller->update_appointment_status();
 	if($response)
 		echo $response;
 }
@@ -66,6 +66,18 @@ if($action == 'fetch_appointments'){
 
 if($action == 'delete_appointment'){
 	$response = $controller->delete_appointment();
+	if($response)
+		echo $response;
+}
+
+if($action == 'get_appointment_details'){
+	$response = $controller->get_appointment_details();
+	if($response)
+		echo $response;
+}
+
+if($action == 'mark_notifications_read'){
+	$response = $controller->mark_notifications_read();
 	if($response)
 		echo $response;
 }

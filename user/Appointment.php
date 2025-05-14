@@ -184,7 +184,6 @@ if(isset($_GET['id'])){
                         <select name="payment" class="form-select" id="paymentType" required <?= $status != 0 ? 'disabled' : ''?>>
                             <option value="">Choose...</option>
                             <option value="0" <?= isset($payment) && $payment == 0 ? 'selected' : '' ?>>Over the Counter</option>
-                            <option value="1" <?= isset($payment) && $payment == 1 ? 'selected' : '' ?>>Card</option>
                         </select>
                     </div>
                 </div>
@@ -335,11 +334,7 @@ if(isset($_GET['id'])){
                         text: resp.message,
                         heightAuto: false
                     }).then(function(){
-                        if(payment == 0 && status == 1){
-                            window.location.href = './profile.php';
-                        }else{
-                            window.location.href = './payment.php?id='+resp.id;
-                        }
+                        window.location.href = './profile.php';
                     })
                 } else{
                     Swal.fire({

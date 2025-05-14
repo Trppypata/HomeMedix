@@ -1,12 +1,12 @@
 <?php
-$servername = "sql108.infinityfree.com";
-$username = "if0_38967460";
-$password = "Ld83ukA9glGB";
-$database = "if0_38967460_homemedix_db";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "homemedix_db";
 
 $con = new mysqli($servername, $username, $password, $database);
 
-$base_url = "https://homemedix.free.nf";
+$base_url = "http://localhost/HomeMedix";
 
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);

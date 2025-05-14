@@ -9,6 +9,14 @@ if (!isset($_SESSION['role']) && $_SESSION['role'] != 0) {
 $notif_sql = "SELECT * FROM admin_notifications WHERE is_read = 0 ORDER BY created_at DESC LIMIT 10";
 $notif_result = $con->query($notif_sql);
 $notif_count = $notif_result ? $notif_result->num_rows : 0;
+
+// Fetch stats for dashboard
+$total_patients = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as cnt FROM users WHERE role = 1"))['cnt'];
+$active_therapists = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as cnt FROM users WHERE role = 2 AND status = 1"))['cnt'];
+$active_caregivers = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as cnt FROM users WHERE role = 3 AND status = 1"))['cnt'];
+$treated_patients = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as cnt FROM appointments WHERE status = 4"))['cnt']; // assuming status 4 is completed
+$in_queue = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as cnt FROM appointments WHERE status = 1"))['cnt']; // pending appointments
+$earnings = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as cnt FROM appointments WHERE status IN (2,4)"))['cnt'] * 1500; // rough estimation
 ?>
 <html lang="en">
 
@@ -60,13 +68,14 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
             <i class="fas fa-calendar"></i>Appointments </a>
         </li>
         <li>
+          <a href="Reports.php">
+            <i class="fas fa-chart-bar"></i>Reports </a>
+        </li>
+        <li>
           <a href="Admin_Inbox.php">
             <i class="fas fa-envelope"></i>Inbox - Contact Us </a>
         </li>
       </ul>
-      <div class="logout-container">
-        <a href="../backend/ajax.php?action=logout" class="ms-3 p-0 w-100"><button class="btn btn-outline-danger btn-logout">Log Out</button></a>
-      </div>
     </div>
 
     <!-- Main Content -->
@@ -78,7 +87,11 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
           <span class="notification-badge"><?= $notif_count ?></span>
         </button>
 
-        <h6>Admin <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span></h6>
+        <h6 class="mx-2">Admin <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span></h6>
+        
+        <a href="../backend/ajax.php?action=logout" class="btn btn-outline-danger btn-sm ms-3">
+          <i class="fas fa-sign-out-alt"></i> Log Out
+        </a>
       </div>
 
       <div class="info">
@@ -95,38 +108,59 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
 
             <div class="button-group d-flex justify-content-between text-center mt-5">
               <div class="button">
-                <button class="custom-button therapist">
-                  <img src="img/Add_Therapist.png" alt="Therapist Icon">
-                  Add Therapist
-                </button>
+                <a href="Admin_UserRecord.php?role=2&action=add" class="text-decoration-none">
+                  <button class="custom-button therapist">
+                    <img src="img/Add_Therapist.png" alt="Therapist Icon">
+                    Add Therapist
+                  </button>
+                </a>
               </div>
 
               <div class="button">
-                <button class="custom-button caregiver">
-                  <img src="img/Add_Caregiver.png" alt="Caregiver Icon">
-                  Add Caregiver
-                </button>
+                <a href="Admin_UserRecord.php?role=3&action=add" class="text-decoration-none">
+                  <button class="custom-button caregiver">
+                    <img src="img/Add_Caregiver.png" alt="Caregiver Icon">
+                    Add Caregiver
+                  </button>
+                </a>
               </div>
 
               <div class="button">
-                <button class="custom-button patient">
-                  <img src="img/Add_Patient.png" alt="Patient Icon">
-                  Add Patient
-                </button>
+                <a href="Admin_PatientRecord.php?action=add" class="text-decoration-none">
+                  <button class="custom-button patient">
+                    <img src="img/Add_Patient.png" alt="Patient Icon">
+                    Add Patient
+                  </button>
+                </a>
               </div>
 
               <div class="button">
-                <button class="custom-button appointment">
-                  <img src="img/Add_Appointment.png" alt="Appointment Icon">
-                  Add Appointment
-                </button>
+                <a href="Appointment.php" class="text-decoration-none">
+                  <button class="custom-button appointment">
+                    <img src="img/Add_Appointment.png" alt="Appointment Icon">
+                    Add Appointment
+                  </button>
+                </a>
               </div>
 
               <div class="button">
-                <button class="custom-button admin">
-                  <img src="img/Add_Admin.png" alt="Admin Icon">
-                  Add Admin
-                </button>
+                <a href="Admin_UserRecord.php?role=0&action=add" class="text-decoration-none">
+                  <button class="custom-button admin">
+                    <img src="img/Add_Admin.png" alt="Admin Icon">
+                    Add Admin
+                  </button>
+                </a>
+              </div>
+
+              <div class="button">
+                <a href="Reports.php" class="text-decoration-none">
+                  <button class="custom-button reports">
+                    <div style="width:100px;height:100px;display:flex;justify-content:center;align-items:center;margin-bottom:10px;">
+                      <i class="fas fa-chart-bar fa-4x"></i>
+                    </div>
+                    View Reports
+                  </button>
+                </a>
               </div>
             </div>
 
@@ -138,7 +172,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                   <div class="status-card shadow bg-light-blue">
                     <div class="status-texts">
                       <div class="status-label">Total Patients</div>
-                      <div class="status-value">5</div>
+                      <div class="status-value"><?= $total_patients ?></div>
                     </div>
                     <div class="status-img">
                       <img src="img/Total_Patients.png" alt="...">
@@ -150,7 +184,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                   <div class="status-card shadow bg-light-blue">
                     <div class="status-texts">
                       <div class="status-label">Active Therapists</div>
-                      <div class="status-value">5</div>
+                      <div class="status-value"><?= $active_therapists ?></div>
                     </div>
                     <div class="status-img">
                       <img src="img/Active_Therapists.png" alt="...">
@@ -162,7 +196,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                   <div class="status-card shadow bg-light-blue">
                     <div class="status-texts">
                       <div class="status-label">Active Caregivers</div>
-                      <div class="status-value">5</div>
+                      <div class="status-value"><?= $active_caregivers ?></div>
                     </div>
                     <div class="status-img">
                       <img src="img/Active_Caregivers.png" alt="...">
@@ -176,7 +210,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                   <div class="status-card shadow bg-light-blue">
                     <div class="status-texts">
                       <div class="status-label">Treated Patients</div>
-                      <div class="status-value">5</div>
+                      <div class="status-value"><?= $treated_patients ?></div>
                     </div>
                     <div class="status-img">
                       <img src="img/Treated_Patients.png" alt="...">
@@ -188,7 +222,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                   <div class="status-card shadow bg-light-blue">
                     <div class="status-texts">
                       <div class="status-label">In Queue</div>
-                      <div class="status-value">5</div>
+                      <div class="status-value"><?= $in_queue ?></div>
                     </div>
                     <div class="status-img">
                       <img src="img/In_queue.png" alt="...">
@@ -200,7 +234,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                   <div class="status-card shadow bg-light-blue">
                     <div class="status-texts">
                       <div class="status-label">Earnings</div>
-                      <div class="status-value">₱50,000</div>
+                      <div class="status-value">₱<?= number_format($earnings) ?></div>
                     </div>
                     <div class="status-img">
                       <img src="img/Peso.png" alt="...">
@@ -228,21 +262,24 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                         </tr>
                       </thead>
                       <tbody>
+                        <?php 
+                        $therapists = mysqli_query($con, "SELECT * FROM users WHERE role = 2 AND status = 1 ORDER BY id DESC LIMIT 3");
+                        if(mysqli_num_rows($therapists) > 0):
+                          while($row = mysqli_fetch_assoc($therapists)):
+                        ?>
                         <tr>
-                          <td>101</td>
-                          <td>Shin Ryujin</td>
-                          <td>Hwang.Yeji@jyp.com</td>
+                          <td><?= $row['id'] ?></td>
+                          <td><?= $row['fname'] . ' ' . $row['lname'] ?></td>
+                          <td><?= $row['email'] ?></td>
                         </tr>
+                        <?php 
+                          endwhile;
+                        else:
+                        ?>
                         <tr>
-                          <td>102</td>
-                          <td>Kim Jisoo</td>
-                          <td>Kim.Jisoo@yg.com</td>
+                          <td colspan="3">No active therapists found</td>
                         </tr>
-                        <tr>
-                          <td>103</td>
-                          <td>Lee Chaeryeong</td>
-                          <td>Lee.Chae@jyp.com</td>
-                        </tr>
+                        <?php endif; ?>
                       </tbody>
                     </table>
                   </div>
@@ -265,16 +302,24 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                         </tr>
                       </thead>
                       <tbody>
+                        <?php 
+                        $caregivers = mysqli_query($con, "SELECT * FROM users WHERE role = 3 AND status = 1 ORDER BY id DESC LIMIT 3");
+                        if(mysqli_num_rows($caregivers) > 0):
+                          while($row = mysqli_fetch_assoc($caregivers)):
+                        ?>
                         <tr>
-                          <td>201</td>
-                          <td>Kim Jennie</td>
-                          <td>Jennie.Kim@yg.com</td>
+                          <td><?= $row['id'] ?></td>
+                          <td><?= $row['fname'] . ' ' . $row['lname'] ?></td>
+                          <td><?= $row['email'] ?></td>
                         </tr>
+                        <?php 
+                          endwhile;
+                        else:
+                        ?>
                         <tr>
-                          <td>202</td>
-                          <td>Jeon Somi</td>
-                          <td>Jeon.Somi@yg.com</td>
+                          <td colspan="3">No active caregivers found</td>
                         </tr>
+                        <?php endif; ?>
                       </tbody>
                     </table>
                   </div>

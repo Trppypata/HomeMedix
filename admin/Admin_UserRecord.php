@@ -1,9 +1,15 @@
 <?php 
 require_once('../backend/function.php');
+require_once('../backend/config.php');
 if(!isset($_SESSION['role']) && $_SESSION['role'] != 0){
   header("location: ../login.php");
   exit;
 }
+
+// Fetch unread notifications
+$notif_sql = "SELECT * FROM admin_notifications WHERE is_read = 0 ORDER BY created_at DESC LIMIT 10";
+$notif_result = $con->query($notif_sql);
+$notif_count = $notif_result ? $notif_result->num_rows : 0;
 
 $role = 1;
 if(isset($_GET['role'])){
@@ -65,13 +71,14 @@ if(isset($_GET['role'])){
               <i class="fas fa-calendar"></i>Appointments </a>
           </li>
           <li>
+            <a href="Reports.php">
+              <i class="fas fa-chart-bar"></i>Reports </a>
+          </li>
+          <li>
             <a href="Admin_Inbox.php">
               <i class="fas fa-envelope"></i>Inbox - Contact Us </a>
           </li>
         </ul>
-        <div class="logout-container">
-          <a href="../backend/ajax.php?action=logout" class="ms-3 p-0 w-100"><button class="btn btn-outline-danger btn-logout">Log Out</button></a>
-        </div>
       </div>
 
       <!-- Main Content -->
@@ -80,11 +87,14 @@ if(isset($_GET['role'])){
 
             <button class="btn btn-light notification-btn">
                 <span class="material-symbols-outlined">notifications</span>
-                <span class="notification-badge">3</span>
+                <span class="notification-badge"><?= $notif_count ?></span>
             </button>
 
-          <h6>Admin <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span>
-          </h6>
+          <h6 class="mx-2">Admin <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span></h6>
+          
+          <a href="../backend/ajax.php?action=logout" class="btn btn-outline-danger btn-sm ms-3">
+            <i class="fas fa-sign-out-alt"></i> Log Out
+          </a>
         </div>
         <div class="info">
           <div class="container-fluid">

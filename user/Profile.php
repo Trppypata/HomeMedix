@@ -177,6 +177,168 @@ foreach($user_data as $data){
       </div>
     </div>
 
+    <!-- Accepted Appointments Section -->
+    <div class="container mt-4">
+      <div class="table-container">
+  
+        <div class="text-container">
+          <h4>Accepted <span class="blue">Appointments</span></h4>
+          </h1>
+        </div>
+  
+        <div class="p-3 mt-4 rounded-4 shadow">
+          <table class="table table-striped text-center table-hover">
+            <thead>
+              <tr>
+                <th>Appointment ID</th>
+                <th>Patient Name</th>
+                <th>Type of Service</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php 
+                $accepted = getAppointmentsByStatus('user_id', $_SESSION['id'], 2); 
+                  if($accepted->num_rows > 0):
+                    foreach($accepted as $appointment):
+                      $fullname = $appointment['fname'] . ($appointment['mname'] ? ' ' . $appointment['mname'] : '') . ' ' . $appointment['lname'];
+              ?>
+              <tr>
+                <td><?= $appointment['id'] + 100 ?></td>
+                <td><?= $fullname ?? '' ?></td>
+                <td><?= getService($appointment['service']) ?></td>
+                <td><?= $appointment['appointment_date'] ?></td>
+                <td><?= $appointment['appointment_time'] ?></td> 
+                <td class="d-flex justify-content-center">
+                  <span class="bordered-green">Accepted</span>
+                </td>
+              </tr>
+              <?php 
+                  endforeach; 
+                else:
+              ?>
+                <tr>
+                  <td colspan="6">No available data.</td>
+                </tr>
+              <?php 
+                endif;
+              ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Declined Appointments Section -->
+    <div class="container mt-4">
+      <div class="table-container">
+  
+        <div class="text-container">
+          <h4>Declined <span class="blue">Appointments</span></h4>
+          </h1>
+        </div>
+  
+        <div class="p-3 mt-4 rounded-4 shadow">
+          <table class="table table-striped text-center table-hover">
+            <thead>
+              <tr>
+                <th>Appointment ID</th>
+                <th>Patient Name</th>
+                <th>Type of Service</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php 
+                $declined = getAppointmentsByStatus('user_id', $_SESSION['id'], 3); 
+                  if($declined->num_rows > 0):
+                    foreach($declined as $appointment):
+                      $fullname = $appointment['fname'] . ($appointment['mname'] ? ' ' . $appointment['mname'] : '') . ' ' . $appointment['lname'];
+              ?>
+              <tr>
+                <td><?= $appointment['id'] + 100 ?></td>
+                <td><?= $fullname ?? '' ?></td>
+                <td><?= getService($appointment['service']) ?></td>
+                <td><?= $appointment['appointment_date'] ?></td>
+                <td><?= $appointment['appointment_time'] ?></td> 
+                <td class="d-flex justify-content-center">
+                  <span class="bordered-red">Declined</span>
+                </td>
+              </tr>
+              <?php 
+                  endforeach; 
+                else:
+              ?>
+                <tr>
+                  <td colspan="6">No available data.</td>
+                </tr>
+              <?php 
+                endif;
+              ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Appointments Section -->
+    <div class="container mt-4">
+      <div class="table-container">
+  
+        <div class="text-container">
+          <h4>Completed <span class="blue">Appointments</span></h4>
+          </h1>
+        </div>
+  
+        <div class="p-3 mt-4 rounded-4 shadow">
+          <table class="table table-striped text-center table-hover">
+            <thead>
+              <tr>
+                <th>Appointment ID</th>
+                <th>Patient Name</th>
+                <th>Type of Service</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php 
+                $completed = getAppointmentsByStatus('user_id', $_SESSION['id'], 4); 
+                  if($completed->num_rows > 0):
+                    foreach($completed as $appointment):
+                      $fullname = $appointment['fname'] . ($appointment['mname'] ? ' ' . $appointment['mname'] : '') . ' ' . $appointment['lname'];
+              ?>
+              <tr>
+                <td><?= $appointment['id'] + 100 ?></td>
+                <td><?= $fullname ?? '' ?></td>
+                <td><?= getService($appointment['service']) ?></td>
+                <td><?= $appointment['appointment_date'] ?></td>
+                <td><?= $appointment['appointment_time'] ?></td> 
+                <td class="d-flex justify-content-center">
+                  <span class="bordered-blue">Completed</span>
+                </td>
+              </tr>
+              <?php 
+                  endforeach; 
+                else:
+              ?>
+                <tr>
+                  <td colspan="6">No available data.</td>
+                </tr>
+              <?php 
+                endif;
+              ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="table-container">
   
@@ -321,6 +483,5 @@ foreach($user_data as $data){
             © 2024 HomeMedix. All rights reserved.
           </div>
         </footer>
-
 </body>
 </html>
