@@ -263,12 +263,29 @@ class Controller
                             $_SESSION['lname'] = $lname;
                             $_SESSION['email'] = $email;
                             $_SESSION['role'] = $role;
-                            // Clear failed attempts on success
+
+
                             $clear = $this->con->prepare("DELETE FROM login_attempts WHERE ip_address = ?");
                             $clear->bind_param("s", $ip);
                             $clear->execute();
                             $clear->close();
-                            echo json_encode(['status' => 'success']);
+
+
+                            if ($role == 0) {
+                                $redirect = './admin/Admin_Dashboard.php';
+                            } elseif ($role == 1) {
+                                $redirect = './user/LandingPage.php';
+                            } elseif ($role == 2 || $role == 3) {
+                                $redirect = './practitioner/Practitioner_dashboard.php';
+                            } else {
+                                $redirect = './index.php';
+                            }
+
+                            echo json_encode([
+                                'status' => 'success',
+                                'redirect' => $redirect
+                            ]);
+                            return;
                         } else {
                             if ($status == 2) {
                                 echo json_encode(['status' => 'error', 'message' => 'Your account is inactive!. Please contact the administrator.']);
@@ -621,37 +638,37 @@ class Controller
                 $get_user->bind_result($user_id, $fname, $lname);
                 $get_user->fetch();
                 $get_user->close();
-                
+
                 $sql = "UPDATE appointments SET status = ? WHERE id = ?";
                 $stmt = $this->con->prepare($sql);
                 $stmt->bind_param("ii", $status, $appointment_id);
-                
+
                 if ($stmt->execute()) {
                     $status_text = '';
                     $notification_message = '';
-                    
-                    switch($status) {
-                        case 1: 
-                            $status_text = 'Pending'; 
+
+                    switch ($status) {
+                        case 1:
+                            $status_text = 'Pending';
                             $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been marked as pending.";
                             break;
-                        case 2: 
-                            $status_text = 'Accepted'; 
+                        case 2:
+                            $status_text = 'Accepted';
                             $notification_message = "Good news! Your appointment #" . ($appointment_id + 100) . " has been accepted.";
                             break;
-                        case 3: 
-                            $status_text = 'Declined'; 
+                        case 3:
+                            $status_text = 'Declined';
                             $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been declined. Please contact us for more information.";
                             break;
-                        case 4: 
-                            $status_text = 'Completed'; 
+                        case 4:
+                            $status_text = 'Completed';
                             $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been marked as completed.";
                             break;
-                        default: 
+                        default:
                             $status_text = 'Updated';
                             $notification_message = "Your appointment #" . ($appointment_id + 100) . " status has been updated.";
                     }
-                    
+
                     // Create notification for the user
                     $notif_sql = "INSERT INTO user_notifications (user_id, type, message) VALUES (?, ?, ?)";
                     $notif_stmt = $this->con->prepare($notif_sql);
@@ -659,7 +676,7 @@ class Controller
                     $notif_stmt->bind_param("iss", $user_id, $type, $notification_message);
                     $notif_stmt->execute();
                     $notif_stmt->close();
-                    
+
                     echo json_encode(['status' => 'success', 'message' => "Appointment marked as $status_text successfully!"]);
                     return;
                 } else {
@@ -796,12 +813,12 @@ class Controller
     {
         try {
             extract($_POST);
-            
+
             $sql = "SELECT * FROM appointments WHERE id = ?";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("i", $appointment_id);
-            
+
             if ($stmt->execute()) {
                 $result = $stmt->get_result();
                 if ($result->num_rows > 0) {
@@ -823,12 +840,12 @@ class Controller
         try {
             session_start();
             $user_id = $_SESSION['id'];
-            
+
             $sql = "UPDATE user_notifications SET is_read = 1 WHERE user_id = ?";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("i", $user_id);
-            
+
             if ($stmt->execute()) {
                 echo json_encode(['status' => 'success', 'message' => 'All notifications marked as read.']);
             } else {
