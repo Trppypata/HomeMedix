@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', function() {
     // Conversation memory to track context
     let conversationContext = {
@@ -91,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'emergency': 'For medical emergencies, please call 911 immediately. For urgent but non-emergency situations related to our services, you can reach our 24/7 support line at 0917 102 8250.',
         'covid protocol': 'We follow strict COVID-19 safety protocols including regular staff testing, proper PPE usage, symptom screening, and adherence to DOH guidelines. The safety of our clients and staff is our top priority.'
     };
-=======
 // HomeMedix Chatbot
 document.addEventListener('DOMContentLoaded', function () {
   // Predefined responses based on keywords
@@ -133,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
     help: 'I can provide information about our services, answer questions about symptoms, help with appointments, or tell you more about HomeMedix. What would you like to know?',
     about:
       "HomeMedix is a healthcare provider specializing in Physical Therapy, Caregiving, and Nursing Home services. We've been serving the Metro Manila area since 2015 with our mission to provide compassionate, high-quality care.",
->>>>>>> 2a0035b6943126ad6f34d108f74d430631f68ff7
 
     // Additional detailed service responses
     'low back pain':
