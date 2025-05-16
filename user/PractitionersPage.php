@@ -1,6 +1,7 @@
 <?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,42 +13,43 @@
     <link rel="stylesheet" href="PractitionersPage.css">
     <title>Practitioners - HomeMedix</title>
 </head>
+
 <body>
 
-<nav class="navbar">
+    <nav class="navbar">
         <div class="navbar-container">
             <div class="logo-container">
                 <img src="img/logo.png" alt="Logo" class="logo" />
             </div>
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="LandingPage.php">Home</a>
+                    <a class="nav-link" href="./LandingPage.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="Services.php">Services</a>
+                    <a class="nav-link" href="./Services.php">Services</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="PractitionersPage.php">Practitioners</a>
+                    <a class="nav-link" href="./PractitionersPage.php">Practitioners</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="AboutUs.php">About Us</a>
+                    <a class="nav-link" href="./AboutUs.php">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="ContactUs.php">Contact Us</a>
+                    <a class="nav-link" href="./ContactUs.php">Contact Us</a>
                 </li>
-                <?php if(isset($_SESSION['id'])): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="profile.php">Hello <?= $_SESSION['fname'] ?></a>
-                </li>
+                <?php if (isset($_SESSION['id'])): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./Profile.php">Hello <?= $_SESSION['fname'] ?></a>
+                    </li>
                 <?php else: ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="Login.php">Login</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.php">Login</a>
+                    </li>
                 <?php endif; ?>
             </ul>
         </div>
     </nav>
-    
+
     <div class="banner-container">
         <img src="img/PractitionerBanner.png" alt="banner-container">
         <div class="banner-text">
@@ -63,19 +65,19 @@
             <div class="col picture-container">
                 <img src="img/Practitioners2.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners1.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners3.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners5.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners4.png" alt="picture-container">
             </div>
@@ -85,19 +87,19 @@
             <div class="col picture-container">
                 <img src="img/Practitioners2.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners1.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners3.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners5.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners4.png" alt="picture-container">
             </div>
@@ -106,25 +108,25 @@
 
     <div class="container-fluid">
         <div class="text-container text-center">
-            <h1>Our <span class="blue">Caregivers</span></h1>            
+            <h1>Our <span class="blue">Caregivers</span></h1>
         </div>
         <div class="row borderless-container-xxl">
             <div class="col picture-container">
                 <img src="img/Practitioners2.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners1.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners3.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners5.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners4.png" alt="picture-container">
             </div>
@@ -134,25 +136,25 @@
             <div class="col picture-container">
                 <img src="img/Practitioners2.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners1.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners3.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners5.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners4.png" alt="picture-container">
             </div>
         </div>
     </div>
-    
+
     <div class="container-fluid">
         <div class="text-container text-center">
             <h1>Our <span class="blue">Nurses</span></h1>
@@ -161,19 +163,19 @@
             <div class="col picture-container">
                 <img src="img/Practitioners2.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners1.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners3.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners5.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners4.png" alt="picture-container">
             </div>
@@ -183,19 +185,19 @@
             <div class="col picture-container">
                 <img src="img/Practitioners2.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners1.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners3.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners5.png" alt="picture-container">
             </div>
-    
+
             <div class="col picture-container">
                 <img src="img/Practitioners4.png" alt="picture-container">
             </div>
@@ -205,47 +207,48 @@
     <!--footer-->
     <footer class="bg-light text-center text-lg-start">
         <div class="container p-4">
-          <!-- Row -->
-          <div class="row">
-            <!-- Column 1 -->
-            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
-              <h5 class="text-uppercase">About HomeMedix</h5>
-              <p class="text-justify">
-                HomeMedix is dedicated to providing quality in-home healthcare services, including physical therapy, caregiving, and nursing. We prioritize compassionate, personalized care to help individuals lead healthier lives.
-              </p>
+            <!-- Row -->
+            <div class="row">
+                <!-- Column 1 -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">About HomeMedix</h5>
+                    <p class="text-justify">
+                        HomeMedix is dedicated to providing quality in-home healthcare services, including physical therapy, caregiving, and nursing. We prioritize compassionate, personalized care to help individuals lead healthier lives.
+                    </p>
+                </div>
+                <!-- Column 2 -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="LandingPage.php" class="text-dark">Home</a></li>
+                        <li><a href="Services.php" class="text-dark">Services</a></li>
+                        <li><a href="PractitionersPage.php" class="text-dark">Practitioners</a></li>
+                        <li><a href="AboutUs.php" class="text-dark">About Us</a></li>
+                        <li><a href="ContactUs.php" class="text-dark">Contact Us</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3 -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Contact Information</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt"></i> <strong>124 A. Flores St, Marikina, 1804 Metro Manila</strong></li>
+                        <li><i class="fas fa-map-marker-alt"></i> <strong>28 6th St, Marikina, 1807 Metro Manila</strong></li>
+                        <li><i class="fas fa-map-marker-alt"></i><strong>24 Sampaguita St, Marikina, 1805 Metro Manila</strong></li>
+                        <li><i class="fas fa-phone"></i> 0917 102 8250</li>
+                        <li><i class="fas fa-envelope"></i> HomeMedix.ptcaregiving@gmail.com</li>
+                    </ul>
+                </div>
             </div>
-            <!-- Column 2 -->
-            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
-              <h5 class="text-uppercase">Quick Links</h5>
-              <ul class="list-unstyled">
-                <li><a href="LandingPage.php" class="text-dark">Home</a></li>
-                <li><a href="Services.php" class="text-dark">Services</a></li>
-                <li><a href="PractitionersPage.php" class="text-dark">Practitioners</a></li>
-                <li><a href="AboutUs.php" class="text-dark">About Us</a></li>
-                <li><a href="ContactUs.php" class="text-dark">Contact Us</a></li>
-              </ul>
-            </div>
-            <!-- Column 3 -->
-            <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
-              <h5 class="text-uppercase">Contact Information</h5>
-              <ul class="list-unstyled">
-                <li><i class="fas fa-map-marker-alt"></i> <strong>124 A. Flores St, Marikina, 1804 Metro Manila</strong></li>
-                <li><i class="fas fa-map-marker-alt"></i> <strong>28 6th St, Marikina, 1807 Metro Manila</strong></li>
-                <li><i class="fas fa-map-marker-alt"></i><strong>24 Sampaguita St, Marikina, 1805 Metro Manila</strong></li>
-                <li><i class="fas fa-phone"></i> 0917 102 8250</li>
-                <li><i class="fas fa-envelope"></i> HomeMedix.ptcaregiving@gmail.com</li>
-              </ul>
-            </div>
-          </div>
 
-          <!-- Row End -->
+            <!-- Row End -->
         </div>
-      
+
         <!-- Copyright -->
         <div class="text-center p-3" style="background-color: #f1f1f1;">
-          © 2024 HomeMedix. All rights reserved.
+            © 2024 HomeMedix. All rights reserved.
         </div>
-      </footer>
+    </footer>
 
 </body>
+
 </html>
