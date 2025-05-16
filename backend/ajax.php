@@ -1,84 +1,66 @@
 <?php
+// Enable error reporting (disable in production)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 include('./controller.php');
 
-$action = $_GET['action'];
 $controller = new Controller();
+$action = $_GET['action'] ?? null;
 
-if($action == 'login'){
-	$response = $controller->login();
-	if($response)
-		echo $response;
+switch ($action) {
+	case 'login':
+		$controller->login();
+		break;
+	case 'signup':
+		$controller->signup();
+		break;
+	case 'verify':
+		$controller->verify();
+		break;
+	case 'logout':
+		$controller->logout();
+		break;
+	case 'update_user':
+		$controller->update_user();
+		break;
+	case 'delete_user':
+		$controller->delete_user();
+		break;
+	case 'add_appointment':
+		$controller->add_appointment();
+		break;
+	case 'update_appointment':
+		$controller->update_appointment();
+		break;
+	case 'update_appointment_status':
+		$controller->update_appointment_status();
+		break;
+	case 'fetch_appointments':
+		$controller->fetch_appointments();
+		break;
+	case 'delete_appointment':
+		$controller->delete_appointment();
+		break;
+	case 'get_appointment_details':
+		$controller->get_appointment_details();
+		break;
+	case 'mark_notifications_read':
+		$controller->mark_notifications_read();
+		break;
+	default:
+		echo json_encode([
+			'status' => 'error',
+			'message' => 'Invalid or missing action.'
+		]);
+		break;
 }
 
-if($action == 'signup'){
-	$response = $controller->signup();
-	if($response)
-		echo $response;
+if ($response) {
+	echo $response;
+} else {
+	echo json_encode([
+		'status' => 'error',
+		'message' => 'No response returned from server logic.'
+	]);
 }
-
-if($action == 'verify'){
-	$response = $controller->verify();
-	if($response)
-		echo $response;
-}
-
-if($action == 'logout'){
-	$response = $controller->logout();
-	if($response)
-		echo $response;
-}
-
-if($action == 'update_user'){
-	$response = $controller->update_user();
-	if($response)
-		echo $response;
-}
-
-if($action == 'delete_user'){
-	$response = $controller->delete_user();
-	if($response)
-		echo $response;
-}
-
-if($action == 'add_appointment'){
-	$response = $controller->add_appointment();
-	if($response)
-		echo $response;
-}
-
-if($action == 'update_appointment'){
-	$response = $controller->update_appointment();
-	if($response)
-		echo $response;
-}
-
-if($action == 'update_appointment_status'){
-	$response = $controller->update_appointment_status();
-	if($response)
-		echo $response;
-}
-
-if($action == 'fetch_appointments'){
-	$response = $controller->fetch_appointments();
-	if($response)
-		echo $response;
-}
-
-if($action == 'delete_appointment'){
-	$response = $controller->delete_appointment();
-	if($response)
-		echo $response;
-}
-
-if($action == 'get_appointment_details'){
-	$response = $controller->get_appointment_details();
-	if($response)
-		echo $response;
-}
-
-if($action == 'mark_notifications_read'){
-	$response = $controller->mark_notifications_read();
-	if($response)
-		echo $response;
-}
-?>

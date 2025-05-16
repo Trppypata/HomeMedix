@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (isset($_SESSION['role'])) {
-    echo $_SESSION['role'];
+
     if ($_SESSION['role'] == 0) {
         header("location: ./admin/Admin_Dashboard.php");
         exit;
@@ -9,7 +9,7 @@ if (isset($_SESSION['role'])) {
         header("location: ./user/LandingPage.php");
         exit;
     } else if ($_SESSION['role'] == 2 || $_SESSION['role'] == 3) {
-        header("location: ./practitioner/Practitioner_dashboard.php");
+        header("location: ./practitioner/Practitioner_Dashboard.php");
         exit;
     }
 }
@@ -231,7 +231,7 @@ if (isset($_SESSION['role'])) {
     $('#login-form').submit(function(e) {
         e.preventDefault()
         $.ajax({
-            url: 'backend/ajax.php?action=login',
+            url: '/backend/ajax.php?action=login',
             method: 'POST',
             data: $(this).serialize(),
             beforeSend: function() {
@@ -246,8 +246,9 @@ if (isset($_SESSION['role'])) {
                 });
             },
             success: function(resp) {
-                console.log(resp)
-                resp = JSON.parse(resp)
+                console.log(resp);
+                resp = JSON.parse(resp);
+
                 if (resp.status === 'error') {
                     Swal.fire({
                         icon: 'error',
@@ -255,7 +256,7 @@ if (isset($_SESSION['role'])) {
                         heightAuto: false
                     });
                 } else if (resp.status === 'success') {
-                    window.location.reload();
+                    window.location.href = resp.redirect; // Use redirect
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -264,6 +265,7 @@ if (isset($_SESSION['role'])) {
                     });
                 }
             },
+
         })
     })
 
