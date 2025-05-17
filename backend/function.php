@@ -22,7 +22,19 @@ function getTableWhere($table, $column, $value){
     $column = mysqli_real_escape_string($con, $column);
     $value = mysqli_real_escape_string($con, $value);
 
-    $query = "SELECT * FROM `$table` WHERE `$column` = $value ORDER BY created_at DESC";
+    // For appointments with status 1 (pending), don't filter by practitioner_id
+    if ($table == 'appointments' && $column == 'status' && $value == 1) {
+        $query = "SELECT * FROM `$table` WHERE `$column` = $value ORDER BY created_at DESC";
+    } 
+    // For appointments with status 2 (accepted), filter by the current practitioner
+    else if ($table == 'appointments' && $column == 'status' && $value == 2 && isset($_SESSION['role']) && ($_SESSION['role'] == 2 || $_SESSION['role'] == 3)) {
+        $query = "SELECT * FROM `$table` WHERE `$column` = $value AND practitioner_id = {$_SESSION['id']} ORDER BY created_at DESC";
+    }
+    // Default query
+    else {
+        $query = "SELECT * FROM `$table` WHERE `$column` = $value ORDER BY created_at DESC";
+    }
+    
     return $query_run = mysqli_query($con, $query);
 }
 
@@ -67,7 +79,11 @@ function getCurrentAppointments(){
 
     $today = date('Y-m-d');
 
-    $query = "SELECT * FROM appointments WHERE status = 2 AND appointment_date > CURDATE() AND practitioner_id = '".$_SESSION['id']."' ORDER BY appointment_time DESC";
+    $query = "SELECT * FROM appointments 
+              WHERE status = 2 
+              AND appointment_date >= CURDATE() 
+              AND practitioner_id = '".$_SESSION['id']."' 
+              ORDER BY appointment_date ASC, appointment_time ASC";
     return $query_run = mysqli_query($con, $query);
 }
 

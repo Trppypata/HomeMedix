@@ -24,6 +24,8 @@ foreach($user_data as $data){
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Practitoner_Profile.css">
     <title>Profile - Practitioners</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
   <body>
     <div class="wrapper">
@@ -301,4 +303,96 @@ foreach($user_data as $data){
     </div>
     </div>
   </body>
+<script>
+  $('.status-btn').on('click', function(){
+    const appointment_id = $(this).data('id')
+    const status = $(this).data('status')
+    let action = 'accept'
+    let color = '#28a745'
+
+    if(status == 3){
+      action = 'decline'
+      color = '#d33'
+    }
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to ${action} this appointment?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: color,
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: `Yes, ${action} it!`
+    }).then((result) => {
+        if(result.isConfirmed){
+            $.ajax({
+                url:'../backend/ajax.php?action=update_appointment_status',
+                method:'POST',
+                data:{ appointment_id: appointment_id, status: status },
+                beforeSend: function() {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Please wait...",
+                        timer: 60000,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                },
+                success:function(resp){
+                    try {
+                        // Try to parse as JSON if it's a string
+                        if (typeof resp === 'string') {
+                            resp = JSON.parse(resp);
+                        }
+                        
+                        if(resp.status === 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: resp.message || 'An error occurred',
+                                heightAuto: false
+                            });
+                        } else if(resp.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: resp.message || `Appointment ${action}ed successfully!`,
+                                heightAuto: false
+                            }).then(function(){
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: 'Something went wrong.',
+                                heightAuto: false
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e, resp);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Invalid response from server',
+                            heightAuto: false
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr, status, error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Connection Error',
+                        text: 'Could not connect to the server. Please check your internet connection.',
+                        heightAuto: false
+                    });
+                }
+            });
+        }
+    });
+  });
+</script>
 </html>

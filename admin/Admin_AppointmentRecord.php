@@ -359,72 +359,195 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
       const appointment_id = $(this).data('id');
       const status = $(this).data('status');
       let statusText = '';
+      let buttonColor = '#3085d6';
       
       switch(status) {
-        case 1: statusText = 'Pending'; break;
-        case 2: statusText = 'Accept'; break;
-        case 3: statusText = 'Decline'; break;
-        case 4: statusText = 'Mark as Completed'; break;
-        default: statusText = 'Update';
+        case 1: 
+          statusText = 'mark as Pending'; 
+          buttonColor = '#f8bb86'; 
+          break;
+        case 2: 
+          statusText = 'Accept'; 
+          buttonColor = '#28a745'; 
+          break;
+        case 3: 
+          statusText = 'Decline'; 
+          buttonColor = '#dc3545'; 
+          break;
+        case 4: 
+          statusText = 'mark as Completed'; 
+          buttonColor = '#17a2b8'; 
+          break;
+        default: 
+          statusText = 'update';
+          buttonColor = '#3085d6';
       }
       
+      // If accepting appointment, first get list of therapists
+      if (status == 2) {
+        $.ajax({
+          url: '../backend/ajax.php?action=get_therapists',
+          method: 'GET',
+          success: function(resp) {
+            try {
+              const data = JSON.parse(resp);
+              if (data.status === 'success' && data.data.length > 0) {
+                // Create therapist options
+                let therapistOptions = '';
+                data.data.forEach(therapist => {
+                  therapistOptions += `<option value="${therapist.id}">${therapist.fname} ${therapist.lname} (${therapist.role == 2 ? 'Therapist' : 'Caregiver'})</option>`;
+                });
+                
+                Swal.fire({
+                  title: 'Assign to Therapist',
+                  html: `
+                    <p>Please select a therapist to assign this appointment to:</p>
+                    <select id="therapist-select" class="form-select">
+                      <option value="">-- Select a therapist --</option>
+                      ${therapistOptions}
+                    </select>
+                  `,
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonColor: buttonColor,
+                  cancelButtonColor: '#6c757d',
+                  confirmButtonText: `Assign & Accept`,
+                  preConfirm: () => {
+                    const therapistId = document.getElementById('therapist-select').value;
+                    if (!therapistId) {
+                      Swal.showValidationMessage('Please select a therapist');
+                      return false;
+                    }
+                    return therapistId;
+                  }
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    updateAppointmentStatus(appointment_id, status, result.value);
+                  }
+                });
+              } else {
+                // No therapists available
+                Swal.fire({
+                  title: 'No Therapists Available',
+                  text: 'There are no therapists or caregivers available in the system. Please add therapists first.',
+                  icon: 'warning',
+                  confirmButtonColor: '#3085d6'
+                });
+              }
+            } catch (e) {
+              console.error('Error parsing therapists:', e, resp);
+              // Fall back to regular confirmation
+              showRegularConfirmation(appointment_id, status, statusText, buttonColor);
+            }
+          },
+          error: function() {
+            // Fall back to regular confirmation on error
+            showRegularConfirmation(appointment_id, status, statusText, buttonColor);
+          }
+        });
+      } else {
+        // For non-accept status, show regular confirmation
+        showRegularConfirmation(appointment_id, status, statusText, buttonColor);
+      }
+    });
+    
+    // Function to show regular confirmation dialog
+    function showRegularConfirmation(appointment_id, status, statusText, buttonColor) {
       Swal.fire({
         title: 'Are you sure?',
         text: `Do you want to ${statusText} this appointment?`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, update it!'
+        confirmButtonColor: buttonColor,
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: `Yes, ${statusText}!`
       }).then((result) => {
         if (result.isConfirmed) {
-          $.ajax({
-            url: '../backend/ajax.php?action=update_appointment_status',
-            method: 'POST',
-            data: {
-              'appointment_id': appointment_id,
-              'status': status
-            },
-            beforeSend: function() {
-              Swal.fire({
-                icon: "info",
-                title: "Please wait...",
-                timer: 60000,
-                showConfirmButton: false,
-                didOpen: () => {
-                  Swal.showLoading();
-                }
-              });
-            },
-            success: function(resp) {
-              console.log(resp);
-              resp = JSON.parse(resp);
-              if (resp.status === 'error') {
-                Swal.fire({
-                  icon: 'error',
-                  title: resp.message,
-                  heightAuto: false
-                });
-              } else if (resp.status === 'success') {
-                Swal.fire({
-                  icon: 'success',
-                  title: resp.message,
-                  heightAuto: false
-                }).then(function() {
-                  window.location.reload();
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Oops something went wrong.',
-                  heightAuto: false
-                });
-              }
+          updateAppointmentStatus(appointment_id, status);
+        }
+      });
+    }
+    
+    // Function to update appointment status
+    function updateAppointmentStatus(appointment_id, status, therapist_id = null) {
+      const data = {
+        'appointment_id': appointment_id,
+        'status': status
+      };
+      
+      // Add therapist_id if provided
+      if (therapist_id) {
+        data.therapist_id = therapist_id;
+      }
+      
+      $.ajax({
+        url: '../backend/ajax.php?action=update_appointment_status',
+        method: 'POST',
+        data: data,
+        beforeSend: function() {
+          Swal.fire({
+            icon: "info",
+            title: "Processing...",
+            text: "Please wait while we update the appointment status.",
+            timer: 60000,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
             }
+          });
+        },
+        success: function(resp) {
+          try {
+            // Try to parse as JSON if it's a string
+            if (typeof resp === 'string') {
+              resp = JSON.parse(resp);
+            }
+            
+            if (resp.status === 'error') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: resp.message || 'An error occurred while updating the appointment status.',
+                heightAuto: false
+              });
+            } else if (resp.status === 'success') {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: resp.message || `Appointment has been updated successfully!`,
+                heightAuto: false
+              }).then(function() {
+                window.location.reload();
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Unexpected Response',
+                text: 'The server returned an unexpected response. Please try again.',
+                heightAuto: false
+              });
+            }
+          } catch (e) {
+            console.error('Error parsing response:', e, resp);
+            Swal.fire({
+              icon: 'error',
+              title: 'Invalid Response',
+              text: 'Failed to parse server response. Please try again or contact support.',
+              heightAuto: false
+            });
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error('AJAX Error:', xhr, status, error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Connection Error',
+            text: 'Could not connect to the server. Please check your network connection and try again.',
+            heightAuto: false
           });
         }
       });
-    });
+    }
     
     // Handle status filtering
     $('#statusFilter').on('change', function() {

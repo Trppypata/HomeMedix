@@ -233,14 +233,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to fetch data from the API
     async function fetchData(type, query = '') {
         try {
-            // Get base URL dynamically
-            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
-            const apiPath = isLocalhost ? '../backend/chatbot_api.php' : 'backend/chatbot_api.php';
+            // Determine if we're in a subdirectory by checking pathname
+            const pathParts = window.location.pathname.split('/');
+            const inUserDir = pathParts.includes('user');
+            
+            // Set API path based on location
+            let apiPath = 'backend/chatbot_api.php';
+            if (inUserDir) {
+                apiPath = '../backend/chatbot_api.php';
+            }
             
             const url = query 
                 ? `${apiPath}?action=${type}&query=${encodeURIComponent(query)}`
                 : `${apiPath}?action=${type}`;
                 
+            console.log('Fetching from:', url); // Debug log
+            
             const response = await fetch(url);
             const data = await response.json();
             if (data.status === 'success') {

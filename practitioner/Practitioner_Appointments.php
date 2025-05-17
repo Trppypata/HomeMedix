@@ -264,18 +264,18 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
     let color = '#28a745'
 
     if(status == 3){
-      action = 'decine'
+      action = 'decline'
       color = '#d33'
     }
 
     Swal.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        text: `Do you want to ${action} this appointment?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: color,
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, ' + action + ' it!'
+        confirmButtonText: `Yes, ${action} it!`
     }).then((result) => {
         if(result.isConfirmed){
             $.ajax({
@@ -294,33 +294,58 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
                     });
                 },
                 success:function(resp){
-                    console.log(resp)
-                    resp = JSON.parse(resp)
-                    if(resp.status === 'error') {
+                    try {
+                        // Try to parse as JSON if it's a string
+                        if (typeof resp === 'string') {
+                            resp = JSON.parse(resp);
+                        }
+                        
+                        if(resp.status === 'error') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: resp.message || 'An error occurred',
+                                heightAuto: false
+                            });
+                        } else if(resp.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: resp.message || `Appointment ${action}ed successfully!`,
+                                heightAuto: false
+                            }).then(function(){
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: 'Something went wrong.',
+                                heightAuto: false
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e, resp);
                         Swal.fire({
                             icon: 'error',
-                            title: resp.message,
-                            heightAuto: false
-                        });
-                    } else if(resp.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: resp.message,
-                            heightAuto: false
-                        }).then(function(){
-                            window.location.reload();
-                        })
-                    } else{
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops something went wrong.',
+                            title: 'Error',
+                            text: 'Invalid response from server',
                             heightAuto: false
                         });
                     }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr, status, error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Connection Error',
+                        text: 'Could not connect to the server. Please check your internet connection.',
+                        heightAuto: false
+                    });
                 }
-            })
+            });
         }
-    })
-  })
+    });
+  });
 </script>
 </html>

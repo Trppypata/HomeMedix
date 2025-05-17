@@ -269,5 +269,8 @@
           © 2024 HomeMedix. All rights reserved.
         </div>
       </footer>
+    
+    <!-- HomeMedix Chatbot -->
+    <script src="assets/js/chatbot.js"></script>
 </body>
 </html>
