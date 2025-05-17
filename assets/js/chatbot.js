@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Get base URL dynamically
             const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
-            const apiPath = isLocalhost ? '../backend/chatbot_api.php' : '/backend/chatbot_api.php';
+            const apiPath = isLocalhost ? '../backend/chatbot_api.php' : 'backend/chatbot_api.php';
             
             const url = query 
                 ? `${apiPath}?action=${type}&query=${encodeURIComponent(query)}`
