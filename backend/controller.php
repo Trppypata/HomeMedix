@@ -267,7 +267,7 @@ class Controller
                             } elseif ($role == 1) {
                                 $redirect = './user/LandingPage.php';
                             } elseif ($role == 2 || $role == 3) {
-                                $redirect = './practitioner/Practitioner_dashboard.php';
+                                $redirect = './practitioner/Practitioner_Dashboard.php';
                             } else {
                                 $redirect = './index.php';
                             }

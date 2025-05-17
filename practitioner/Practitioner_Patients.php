@@ -1,7 +1,7 @@
 <?php
 require_once('../backend/function.php');
-if(!isset($_SESSION['role']) && ($_SESSION['role'] != 2 || $_SESSION['role'] != 3)){
-  header("location: ../login.php");
+if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 3)){
+  header("location: ../index.php");
   exit;
 }
 ?>
