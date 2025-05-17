@@ -178,7 +178,6 @@ foreach($user_data as $data){
                               <td><?= getService($current['service']) ?></td>
                               <td><?= $current['appointment_date'] ?></td>
                               <td><?= $current['appointment_time'] ?></td>
-                              <tdappointment</td> 
                             </tr>
                             <?php 
                                 endforeach; 

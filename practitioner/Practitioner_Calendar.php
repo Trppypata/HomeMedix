@@ -14,6 +14,7 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Practitioner_Records.css">
+    <link rel="stylesheet" href="Practitioner_Calendar.css">
     <title>Appointment - Practitioners</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -95,9 +96,7 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
         method: 'GET',
         dataType: 'json',
         success: function (response) {
-          console.log(response)
-          if (response && response.data) {
-           
+          if (response && response.data && Array.isArray(response.data)) {
             const result = response.data;
             $.each(result, function (i, item) {
               events.push({
@@ -109,247 +108,256 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
                 service: item.service,
               });
             });
+          }
 
-            // Initialize FullCalendar
-            $('#calendar').fullCalendar({
-              defaultView: 'month',
-              timeZone: 'local',
-              editable: true,
-              selectable: true,
-              selectHelper: true,
-              events: events,
-              select: function(start, end) {
-                Swal.fire({
-                  title: 'Add Appointment',
-                  html: `
-                    <form id="appointmentForm" class="text-start">
-                      <div class="mb-3">
-                        <label for="fname" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="fname" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="lname" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lname" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="phone" required placeholder="09XXXXXXXXX">
-                      </div>
-                      <div class="mb-3">
-                        <label for="sex" class="form-label">Sex</label>
-                        <select class="form-control" id="sex" required>
-                          <option value="">Select</option>
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                        </select>
-                      </div>
-                      <div class="mb-3">
-                        <label for="bday" class="form-label">Birthday</label>
-                        <input type="date" class="form-control" id="bday" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="barangay" class="form-label">Barangay</label>
-                        <input type="text" class="form-control" id="barangay" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="city" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="zip" class="form-label">ZIP Code</label>
-                        <input type="text" class="form-control" id="zip" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="appointment_case" class="form-label">Appointment Case</label>
-                        <input type="text" class="form-control" id="appointment_case" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="service" class="form-label">Service</label>
-                        <select class="form-control" id="service" required>
-                          <option value="">Select</option>
-                          <option value="0">Physical Therapy</option>
-                          <option value="1">Caregiving Service (8-hour shift)</option>
-                          <option value="2">Caregiving Service (12-hour shift)</option>
-                          <option value="3">Caregiving Service (24-hour shift)</option>
-                          <option value="4">Nursing Home</option>
-                        </select>
-                      </div>
-                      <div class="mb-3">
-                        <label for="time" class="form-label">Time</label>
-                        <input type="time" class="form-control" id="time" required>
-                      </div>
-                    </form>
-                  `,
-                  showCancelButton: true,
-                  confirmButtonText: 'Save',
-                  cancelButtonText: 'Cancel',
-                  confirmButtonColor: '#28a745',
-                  width: '600px',
-                  preConfirm: () => {
-                    const fname = document.getElementById('fname').value;
-                    const lname = document.getElementById('lname').value;
-                    const email = document.getElementById('email').value;
-                    const phone = document.getElementById('phone').value;
-                    const sex = document.getElementById('sex').value;
-                    const bday = document.getElementById('bday').value;
-                    const address = document.getElementById('address').value;
-                    const barangay = document.getElementById('barangay').value;
-                    const city = document.getElementById('city').value;
-                    const zip = document.getElementById('zip').value;
-                    const appointment_case = document.getElementById('appointment_case').value;
-                    const service = document.getElementById('service').value;
-                    const time = document.getElementById('time').value;
-                    
-                    // Check required fields
-                    const requiredFields = [
-                      { id: 'fname', label: 'First Name' },
-                      { id: 'lname', label: 'Last Name' },
-                      { id: 'email', label: 'Email' },
-                      { id: 'phone', label: 'Phone' },
-                      { id: 'sex', label: 'Sex' },
-                      { id: 'bday', label: 'Birthday' },
-                      { id: 'address', label: 'Address' },
-                      { id: 'barangay', label: 'Barangay' },
-                      { id: 'city', label: 'City' },
-                      { id: 'zip', label: 'ZIP Code' },
-                      { id: 'appointment_case', label: 'Appointment Case' },
-                      { id: 'service', label: 'Service' },
-                      { id: 'time', label: 'Time' }
-                    ];
-                    
-                    for (const field of requiredFields) {
-                      if (!document.getElementById(field.id).value) {
-                        Swal.showValidationMessage(`Please enter ${field.label}`);
-                        return false;
-                      }
-                    }
-
-                    // Validate email format
-                    if (!/^\S+@\S+\.\S+$/.test(email)) {
-                      Swal.showValidationMessage('Please enter a valid email');
+          // Initialize FullCalendar
+          $('#calendar').fullCalendar({
+            defaultView: 'month',
+            timeZone: 'local',
+            editable: true,
+            selectable: true,
+            selectHelper: true,
+            events: events,
+            select: function(start, end) {
+              Swal.fire({
+                title: 'Add Appointment',
+                html: `
+                  <form id="appointmentForm" class="text-start">
+                    <div class="mb-3">
+                      <label for="fname" class="form-label">First Name</label>
+                      <input type="text" class="form-control" id="fname" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="lname" class="form-label">Last Name</label>
+                      <input type="text" class="form-control" id="lname" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="phone" class="form-label">Phone</label>
+                      <input type="text" class="form-control" id="phone" required placeholder="09XXXXXXXXX">
+                    </div>
+                    <div class="mb-3">
+                      <label for="sex" class="form-label">Sex</label>
+                      <select class="form-control" id="sex" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="bday" class="form-label">Birthday</label>
+                      <input type="date" class="form-control" id="bday" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="address" class="form-label">Address</label>
+                      <input type="text" class="form-control" id="address" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="barangay" class="form-label">Barangay</label>
+                      <input type="text" class="form-control" id="barangay" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="city" class="form-label">City</label>
+                      <input type="text" class="form-control" id="city" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="zip" class="form-label">ZIP Code</label>
+                      <input type="text" class="form-control" id="zip" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="appointment_case" class="form-label">Appointment Case</label>
+                      <input type="text" class="form-control" id="appointment_case" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="service" class="form-label">Service</label>
+                      <select class="form-control" id="service" required>
+                        <option value="">Select</option>
+                        <option value="0">Physical Therapy</option>
+                        <option value="1">Caregiving Service (8-hour shift)</option>
+                        <option value="2">Caregiving Service (12-hour shift)</option>
+                        <option value="3">Caregiving Service (24-hour shift)</option>
+                        <option value="4">Nursing Home</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="time" class="form-label">Time</label>
+                      <input type="time" class="form-control" id="time" required>
+                    </div>
+                  </form>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#28a745',
+                width: '600px',
+                preConfirm: () => {
+                  const fname = document.getElementById('fname').value;
+                  const lname = document.getElementById('lname').value;
+                  const email = document.getElementById('email').value;
+                  const phone = document.getElementById('phone').value;
+                  const sex = document.getElementById('sex').value;
+                  const bday = document.getElementById('bday').value;
+                  const address = document.getElementById('address').value;
+                  const barangay = document.getElementById('barangay').value;
+                  const city = document.getElementById('city').value;
+                  const zip = document.getElementById('zip').value;
+                  const appointment_case = document.getElementById('appointment_case').value;
+                  const service = document.getElementById('service').value;
+                  const time = document.getElementById('time').value;
+                  
+                  // Check required fields
+                  const requiredFields = [
+                    { id: 'fname', label: 'First Name' },
+                    { id: 'lname', label: 'Last Name' },
+                    { id: 'email', label: 'Email' },
+                    { id: 'phone', label: 'Phone' },
+                    { id: 'sex', label: 'Sex' },
+                    { id: 'bday', label: 'Birthday' },
+                    { id: 'address', label: 'Address' },
+                    { id: 'barangay', label: 'Barangay' },
+                    { id: 'city', label: 'City' },
+                    { id: 'zip', label: 'ZIP Code' },
+                    { id: 'appointment_case', label: 'Appointment Case' },
+                    { id: 'service', label: 'Service' },
+                    { id: 'time', label: 'Time' }
+                  ];
+                  
+                  for (const field of requiredFields) {
+                    if (!document.getElementById(field.id).value) {
+                      Swal.showValidationMessage(`Please enter ${field.label}`);
                       return false;
                     }
-
-                    // Validate phone format (09XXXXXXXXX or +639XXXXXXXXX)
-                    if (!/^(09\d{9}|\+639\d{9})$/.test(phone)) {
-                      Swal.showValidationMessage('Please enter a valid phone number (09XXXXXXXXX or +639XXXXXXXXX)');
-                      return false;
-                    }
-                    
-                    return { 
-                      fname, lname, email, phone, sex, bday, address, 
-                      barangay, city, zip, appointment_case, service, time 
-                    };
                   }
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    const { 
-                      fname, lname, email, phone, sex, bday, address, 
-                      barangay, city, zip, appointment_case, service, time 
-                    } = result.value;
-                    const date = start.format('YYYY-MM-DD');
-                    
-                    // Add the event to the calendar
-                    $('#calendar').fullCalendar('renderEvent', {
-                      title: `${fname} ${lname}`,
-                      start: `${date}T${time}`,
-                      end: `${date}T${time}`,
-                      color: '#28a745',
-                      service: getServiceName(service)
-                    }, true);
-                    
-                    // Save to database
-                    $.ajax({
-                      url: '../backend/ajax.php?action=add_appointment',
-                      method: 'POST',
-                      data: {
-                        fname: fname,
-                        lname: lname,
-                        email: email,
-                        phone: phone,
-                        sex: sex,
-                        bday: bday,
-                        address: address,
-                        barangay: barangay,
-                        city: city,
-                        zip: zip,
-                        appointment_case: appointment_case,
-                        service: service,
-                        appointment_date: date,
-                        appointment_time: time,
-                        status: 2  // Set as accepted since it's added by the therapist
-                      },
-                      success: function(response) {
-                        try {
-                          const data = JSON.parse(response);
-                          if (data.status === 'success') {
-                            Swal.fire({
-                              title: 'Success!',
-                              text: 'Appointment added successfully',
-                              icon: 'success',
-                              confirmButtonColor: '#28a745'
-                            }).then(() => {
-                              // Reload calendar to show updated events
-                              $('#calendar').fullCalendar('destroy');
-                              display_events();
-                            });
-                          } else {
-                            Swal.fire({
-                              title: 'Error!',
-                              text: data.message || 'Failed to add appointment',
-                              icon: 'error',
-                              confirmButtonColor: '#dc3545'
-                            });
-                            console.error('Server response:', data);
-                          }
-                        } catch (e) {
-                          console.error('Error parsing response:', e, response);
+
+                  // Validate email format
+                  if (!/^\S+@\S+\.\S+$/.test(email)) {
+                    Swal.showValidationMessage('Please enter a valid email');
+                    return false;
+                  }
+
+                  // Validate phone format (09XXXXXXXXX or +639XXXXXXXXX)
+                  if (!/^(09\d{9}|\+639\d{9})$/.test(phone)) {
+                    Swal.showValidationMessage('Please enter a valid phone number (09XXXXXXXXX or +639XXXXXXXXX)');
+                    return false;
+                  }
+                  
+                  return { 
+                    fname, lname, email, phone, sex, bday, address, 
+                    barangay, city, zip, appointment_case, service, time 
+                  };
+                }
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const { 
+                    fname, lname, email, phone, sex, bday, address, 
+                    barangay, city, zip, appointment_case, service, time 
+                  } = result.value;
+                  const date = start.format('YYYY-MM-DD');
+                  
+                  // Add the event to the calendar
+                  $('#calendar').fullCalendar('renderEvent', {
+                    title: `${fname} ${lname}`,
+                    start: `${date}T${time}`,
+                    end: `${date}T${time}`,
+                    color: '#28a745',
+                    service: getServiceName(service)
+                  }, true);
+                  
+                  // Save to database
+                  $.ajax({
+                    url: '../backend/ajax.php?action=add_appointment',
+                    method: 'POST',
+                    data: {
+                      fname: fname,
+                      lname: lname,
+                      email: email,
+                      phone: phone,
+                      sex: sex,
+                      bday: bday,
+                      address: address,
+                      barangay: barangay,
+                      city: city,
+                      zip: zip,
+                      appointment_case: appointment_case,
+                      service: service,
+                      appointment_date: date,
+                      appointment_time: time,
+                      status: 2  // Set as accepted since it's added by the therapist
+                    },
+                    beforeSend: function() {
+                      Swal.fire({
+                        title: 'Saving...',
+                        text: 'Please wait while we save your appointment',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                          Swal.showLoading();
+                        }
+                      });
+                    },
+                    success: function(response) {
+                      try {
+                        const data = JSON.parse(response);
+                        if (data.status === 'success') {
+                          Swal.fire({
+                            title: 'Success!',
+                            text: 'Appointment added successfully',
+                            icon: 'success',
+                            confirmButtonColor: '#28a745'
+                          }).then(() => {
+                            // Reload calendar to show updated events
+                            $('#calendar').fullCalendar('destroy');
+                            display_events();
+                          });
+                        } else {
                           Swal.fire({
                             title: 'Error!',
-                            text: 'Invalid server response',
+                            text: data.message || 'Failed to add appointment',
                             icon: 'error',
                             confirmButtonColor: '#dc3545'
                           });
+                          console.error('Server response:', data);
                         }
-                      },
-                      error: function(xhr, status, error) {
-                        console.error('AJAX error:', xhr, status, error);
+                      } catch (e) {
+                        console.error('Error parsing response:', e, response);
                         Swal.fire({
                           title: 'Error!',
-                          text: 'Failed to add appointment',
+                          text: 'Invalid server response',
                           icon: 'error',
                           confirmButtonColor: '#dc3545'
                         });
                       }
-                    });
-                  }
-                });
-              },
-              eventClick: function (event) {
-                Swal.fire({
-                  title: event.title,
-                  html: `
-                    <p><strong>Service:</strong> ${event.service || 'Not specified'}</p>
-                    <p><strong>Date:</strong> ${event.start.format('MMMM D, YYYY')}</p>
-                    <p><strong>Time:</strong> ${event.start.format('h:mm A')}</p>
-                  `,
-                  icon: 'info', 
-                  confirmButtonText: 'OK',
-                  confirmButtonColor: '#28a745', 
-                });
-              },
-            });
-          } else {
-            console.error('No data received.');
-          }
+                    },
+                    error: function(xhr, status, error) {
+                      console.error('AJAX error:', xhr, status, error);
+                      Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to add appointment. Please check your network connection.',
+                        icon: 'error',
+                        confirmButtonColor: '#dc3545'
+                      });
+                    }
+                  });
+                }
+              });
+            },
+            eventClick: function (event) {
+              Swal.fire({
+                title: event.title,
+                html: `
+                  <p><strong>Service:</strong> ${event.service || 'Not specified'}</p>
+                  <p><strong>Date:</strong> ${event.start.format('MMMM D, YYYY')}</p>
+                  <p><strong>Time:</strong> ${event.start.format('h:mm A')}</p>
+                `,
+                icon: 'info', 
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#28a745', 
+              });
+            },
+          });
         },
         error: function (xhr, status, error) {
           console.log(xhr)

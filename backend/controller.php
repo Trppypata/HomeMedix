@@ -729,36 +729,39 @@ class Controller
 
     function fetch_appointments()
     {
-        session_start();
-        $practitioner_id = $_SESSION['id'];
+        try {
+            session_start();
+            $practitioner_id = $_SESSION['id'];
 
-        $sql = "SELECT * FROM appointments 
-                WHERE status = 2 
-                AND practitioner_id = ?";
-        $stmt = $this->con->prepare($sql);
-        $stmt->bind_param('i', $practitioner_id);
+            $sql = "SELECT * FROM appointments 
+                    WHERE status = 2 
+                    AND practitioner_id = ?";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bind_param('i', $practitioner_id);
 
-        if ($stmt->execute()) {
-            $result = $stmt->get_result();
-            $appointments = [];
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                $appointments = [];
 
-            while ($row = $result->fetch_assoc()) {
-                $appointments[] = [
-                    'event_id' => $row['id'],
-                    'title' => $row['fname'] . ($row['mname'] ? ' ' . $row['mname'] : '') . ' ' . $row['lname'],
-                    'start' => $row['appointment_date'] . 'T' . $row['appointment_time'],
-                    'end' => $row['appointment_date'] . 'T' . $row['appointment_time'],
-                    'color' => '#28a745',
-                    'service' => $this->getService($row['service']),
-                ];
+                while ($row = $result->fetch_assoc()) {
+                    $fullname = $row['fname'] . ($row['mname'] ? ' ' . $row['mname'] : '') . ' ' . $row['lname'];
+                    $appointments[] = [
+                        'event_id' => $row['id'],
+                        'title' => $fullname,
+                        'start' => $row['appointment_date'] . 'T' . $row['appointment_time'],
+                        'end' => $row['appointment_date'] . 'T' . $row['appointment_time'],
+                        'color' => '#28a745',
+                        'service' => $this->getService($row['service']),
+                    ];
+                }
+
+                return json_encode(['status' => 'success', 'data' => $appointments]);
+            } else {
+                return json_encode(['status' => 'error', 'message' => 'Failed to fetch appointments.']);
             }
-
-            echo json_encode(['data' => $appointments]);
-        } else {
-            echo json_encode(['error' => 'Failed to fetch appointments.']);
+        } catch (Exception $e) {
+            return json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
         }
-
-        $stmt->close();
     }
 
     function getService($service)

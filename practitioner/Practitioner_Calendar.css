@@ -1,0 +1,79 @@
+/* Calendar Styling */
+#calendar {
+    max-width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.fc-header-toolbar {
+    margin-bottom: 20px !important;
+}
+
+.fc-today {
+    background-color: #e9f7fe !important;
+}
+
+.fc-day-grid-event {
+    padding: 8px !important;
+    border-radius: 4px !important;
+}
+
+.fc-day-grid-event .fc-content {
+    white-space: normal !important;
+    overflow: hidden;
+}
+
+.fc-day-grid-event .fc-time {
+    font-weight: bold;
+}
+
+/* Modal styling */
+.swal2-popup {
+    font-size: 14px !important;
+}
+
+.swal2-content {
+    font-size: 14px !important;
+}
+
+.swal2-title {
+    font-size: 22px !important;
+}
+
+/* Form styling */
+#appointmentForm .form-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+#appointmentForm .form-control {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 8px 12px;
+}
+
+#appointmentForm .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Make calendar responsive */
+@media (max-width: 768px) {
+    #calendar {
+        padding: 10px;
+    }
+    
+    .fc-toolbar {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .fc-toolbar .fc-left,
+    .fc-toolbar .fc-right,
+    .fc-toolbar .fc-center {
+        margin-bottom: 10px;
+    }
+}

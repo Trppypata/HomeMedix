@@ -132,7 +132,6 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
                               <td><?= getService($current['service']) ?></td>
                               <td><?= $current['appointment_date'] ?></td>
                               <td><?= $current['appointment_time'] ?></td>
-                              <tdappointment</td> 
                             </tr>
                             <?php 
                                 endforeach; 
@@ -280,7 +279,7 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
     }).then((result) => {
         if(result.isConfirmed){
             $.ajax({
-                url:'../backend/ajax.php?action=update_appoinment_status',
+                url:'../backend/ajax.php?action=update_appointment_status',
                 method:'POST',
                 data:{ appointment_id: appointment_id, status: status },
                 beforeSend: function() {
