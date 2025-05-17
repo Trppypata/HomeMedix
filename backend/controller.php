@@ -46,33 +46,27 @@ class Controller
             $role = $role ?? 1;
 
             if (!$this->validateEmail($email)) {
-                echo json_encode(['status' => 'error', 'message' => 'Invalid Email Address.']);
-                return;
+                return json_encode(['status' => 'error', 'message' => 'Invalid Email Address.']);
             }
 
             if (!$this->validatePassword($password)) {
-                echo json_encode(['status' => 'error', 'message' => 'Password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character.']);
-                return;
+                return json_encode(['status' => 'error', 'message' => 'Password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number, and one special character.']);
             }
 
             if ($password != $cpassword) {
-                echo json_encode(['status' => 'error', 'message' => 'Password and confirm password do not match.']);
-                return;
+                return json_encode(['status' => 'error', 'message' => 'Password and confirm password do not match.']);
             }
 
             if (!$this->validatePhone($phone)) {
-                echo json_encode(['status' => 'error', 'message' => 'Invalid Phone Number. It must start with 09 or +639 followed by 9 digits.']);
-                return;
+                return json_encode(['status' => 'error', 'message' => 'Invalid Phone Number. It must start with 09 or +639 followed by 9 digits.']);
             }
 
             if (!$this->validateName($fname)) {
-                echo json_encode(['status' => 'error', 'message' => 'Invalid First Name. Only alphabets and spaces are allowed.']);
-                return;
+                return json_encode(['status' => 'error', 'message' => 'Invalid First Name. Only alphabets and spaces are allowed.']);
             }
 
             if (!$this->validateName($lname)) {
-                echo json_encode(['status' => 'error', 'message' => 'Invalid Last Name. Only alphabets and spaces are allowed.']);
-                return;
+                return json_encode(['status' => 'error', 'message' => 'Invalid Last Name. Only alphabets and spaces are allowed.']);
             }
 
             $sql = "SELECT * FROM users WHERE email = ?";
@@ -84,11 +78,10 @@ class Controller
                 $stmt->store_result();
 
                 if ($stmt->num_rows > 0) {
-                    echo json_encode(['status' => 'error', 'message' => 'Email is taken. Please login or register a new email.']);
-                    return;
+                    return json_encode(['status' => 'error', 'message' => 'Email is taken. Please login or register a new email.']);
                 }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+                return json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
 
             $stmt->close();
@@ -110,10 +103,7 @@ class Controller
                 $stmt->bind_param("is", $user_id, $token);
 
                 if ($stmt->execute()) {
-
                     $link = "{$this->base_url}/backend/ajax.php?action=verify&secret=$token";
-
-
 
                     $message = "
                         <html>
@@ -132,12 +122,10 @@ class Controller
                     $this->mail->Subject = 'Account Verification';
                     $this->mail->Body = $message;
 
-                    if (!$this->mail->send()) {
-                        echo 'Message could not be sent.';
-                        echo 'Mailer Error: ' . $this->mail->ErrorInfo;
-                    } else {
-                        'Message has been sent';
-                    }
+                    // Suppress output from mail function
+                    ob_start();
+                    $mailResult = $this->mail->send();
+                    ob_end_clean();
 
                     if (!empty($hire_date)) {
                         $stmt->close();
@@ -148,20 +136,19 @@ class Controller
                         $stmt->bind_param("iss", $user_id, $specialization, $hire_date);
 
                         if (!$stmt->execute()) {
-                            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+                            return json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
                         }
                     }
 
-                    echo json_encode(['status' => 'success', 'message' => 'Registered successfully!. Please check your email to verify your account.']);
-                    return;
+                    return json_encode(['status' => 'success', 'message' => 'Registered successfully!. Please check your email to verify your account.']);
                 } else {
-                    echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+                    return json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
                 }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+                return json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
+            return json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
@@ -192,21 +179,28 @@ class Controller
 
                     if ($stmt->execute()) {
                         $_SESSION['flash-msg'] = 'verified';
-                        header("location: ../index.php");
+                        // Redirect to the index page
+                        header("location: " . $this->base_url . "/index.php");
+                        exit;
                     } else {
                         $_SESSION['flash-msg'] = 'account-not-found';
-                        header("location: ../index.php");
+                        header("location: " . $this->base_url . "/index.php");
+                        exit;
                     }
                 } else {
                     $_SESSION['flash-msg'] = 'account-not-found';
-                    header("location: ../index.php");
+                    header("location: " . $this->base_url . "/index.php");
+                    exit;
                 }
             } else {
                 $_SESSION['flash-msg'] = 'account-not-found';
-                header("location: ../index.php");
+                header("location: " . $this->base_url . "/index.php");
+                exit;
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
+            $_SESSION['flash-msg'] = 'error';
+            header("location: " . $this->base_url . "/index.php");
+            exit;
         }
     }
 
@@ -243,8 +237,7 @@ class Controller
                     $notif_stmt->execute();
                     $notif_stmt->close();
                 }
-                echo json_encode(['status' => 'error', 'message' => 'Too many failed login attempts. Please try again after ' . $lockout_time . ' minutes.']);
-                return;
+                return json_encode(['status' => 'error', 'message' => 'Too many failed login attempts. Please try again after ' . $lockout_time . ' minutes.']);
             }
 
             $sql = "SELECT id, fname, lname, password, status, role FROM users WHERE email = ?";
@@ -264,12 +257,10 @@ class Controller
                             $_SESSION['email'] = $email;
                             $_SESSION['role'] = $role;
 
-
                             $clear = $this->con->prepare("DELETE FROM login_attempts WHERE ip_address = ?");
                             $clear->bind_param("s", $ip);
                             $clear->execute();
                             $clear->close();
-
 
                             if ($role == 0) {
                                 $redirect = './admin/Admin_Dashboard.php';
@@ -281,16 +272,15 @@ class Controller
                                 $redirect = './index.php';
                             }
 
-                            echo json_encode([
+                            return json_encode([
                                 'status' => 'success',
                                 'redirect' => $redirect
                             ]);
-                            return;
                         } else {
                             if ($status == 2) {
-                                echo json_encode(['status' => 'error', 'message' => 'Your account is inactive!. Please contact the administrator.']);
+                                return json_encode(['status' => 'error', 'message' => 'Your account is inactive!. Please contact the administrator.']);
                             } else {
-                                echo json_encode(['status' => 'error', 'message' => 'Your account is unverified!. Please check your email address.']);
+                                return json_encode(['status' => 'error', 'message' => 'Your account is unverified!. Please check your email address.']);
                             }
                         }
                     } else {
@@ -299,7 +289,7 @@ class Controller
                         $fail->bind_param("s", $ip);
                         $fail->execute();
                         $fail->close();
-                        echo json_encode(['status' => 'error', 'message' => 'Email or password is incorrect.']);
+                        return json_encode(['status' => 'error', 'message' => 'Email or password is incorrect.']);
                     }
                 } else {
                     // Log failed attempt
@@ -307,13 +297,13 @@ class Controller
                     $fail->bind_param("s", $ip);
                     $fail->execute();
                     $fail->close();
-                    echo json_encode(['status' => 'error', 'message' => 'Email or password is incorrect.']);
+                    return json_encode(['status' => 'error', 'message' => 'Email or password is incorrect.']);
                 }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
+                return json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $stmt->error . ' in query: ' . $sql]);
             }
         } catch (mysqli_sql_exception $e) {
-            echo json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
+            return json_encode(['status' => 'error', 'message' => 'An unexpected error occurred. Please try again later.', 'error' => 'Error: ' . $e]);
         }
     }
 
@@ -861,7 +851,7 @@ class Controller
         session_start();
         session_destroy();
 
-        header("location: ../index.php");
+        header("location: " . $this->base_url . "/index.php");
         exit;
     }
 }

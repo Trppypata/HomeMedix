@@ -1,6 +1,6 @@
 <?php
 // Enable error reporting (disable in production)
-ini_set('display_errors', 1);
+ini_set('display_errors', 0); // Disable error display
 error_reporting(E_ALL);
 
 include('./controller.php');
@@ -8,54 +8,58 @@ include('./controller.php');
 $controller = new Controller();
 $action = $_GET['action'] ?? null;
 
+// Initialize response variable
+$response = null;
+
 switch ($action) {
 	case 'login':
-		$controller->login();
+		$response = $controller->login();
 		break;
 	case 'signup':
-		$controller->signup();
+		$response = $controller->signup();
 		break;
 	case 'verify':
-		$controller->verify();
+		$response = $controller->verify();
 		break;
 	case 'logout':
-		$controller->logout();
+		$response = $controller->logout();
 		break;
 	case 'update_user':
-		$controller->update_user();
+		$response = $controller->update_user();
 		break;
 	case 'delete_user':
-		$controller->delete_user();
+		$response = $controller->delete_user();
 		break;
 	case 'add_appointment':
-		$controller->add_appointment();
+		$response = $controller->add_appointment();
 		break;
 	case 'update_appointment':
-		$controller->update_appointment();
+		$response = $controller->update_appointment();
 		break;
 	case 'update_appointment_status':
-		$controller->update_appointment_status();
+		$response = $controller->update_appointment_status();
 		break;
 	case 'fetch_appointments':
-		$controller->fetch_appointments();
+		$response = $controller->fetch_appointments();
 		break;
 	case 'delete_appointment':
-		$controller->delete_appointment();
+		$response = $controller->delete_appointment();
 		break;
 	case 'get_appointment_details':
-		$controller->get_appointment_details();
+		$response = $controller->get_appointment_details();
 		break;
 	case 'mark_notifications_read':
-		$controller->mark_notifications_read();
+		$response = $controller->mark_notifications_read();
 		break;
 	default:
-		echo json_encode([
+		$response = json_encode([
 			'status' => 'error',
 			'message' => 'Invalid or missing action.'
 		]);
 		break;
 }
 
+// Output the response
 if ($response) {
 	echo $response;
 } else {

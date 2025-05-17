@@ -1,7 +1,15 @@
 <?php
-require_once('./config.php');
+// Try different include paths to work in both local and remote environments
+if (file_exists('./config.php')) {
+    require_once('./config.php');
+} elseif (file_exists('../backend/config.php')) {
+    require_once('../backend/config.php');
+} else {
+    die(json_encode(['status' => 'error', 'message' => 'Configuration file not found']));
+}
 
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
 
 function getServices() {
     global $con;

@@ -231,7 +231,7 @@ if (isset($_SESSION['role'])) {
     $('#login-form').submit(function(e) {
         e.preventDefault()
         $.ajax({
-            url: '/backend/ajax.php?action=login',
+            url: 'backend/ajax.php?action=login',
             method: 'POST',
             data: $(this).serialize(),
             beforeSend: function() {
