@@ -581,8 +581,8 @@ session_start();
         });
     </script>
     
-    <!-- HomeMedix Chatbot -->
-    <script src="assets/js/chatbot.js"></script>
+    <!-- Include PHP Chatbot -->
+    <?php include('chatbot.php'); ?>
 
 </body>
 </html>
