@@ -140,6 +140,11 @@ function getService($service){
 
 function getPractitionerNotifications($practitioner_id, $limit = 10) {
     global $con;
+    $table_check = mysqli_query($con, "SHOW TABLES LIKE 'practitioner_notifications'");
+    if (mysqli_num_rows($table_check) == 0) {
+        return mysqli_query($con, "SELECT * FROM (SELECT 1) as empty WHERE 0"); // Return empty result
+    }
+    
     $practitioner_id = mysqli_real_escape_string($con, $practitioner_id);
     $query = "SELECT * FROM practitioner_notifications WHERE practitioner_id = $practitioner_id ORDER BY created_at DESC LIMIT $limit";
     return mysqli_query($con, $query);
@@ -147,6 +152,11 @@ function getPractitionerNotifications($practitioner_id, $limit = 10) {
 
 function getPractitionerUnreadNotificationCount($practitioner_id) {
     global $con;
+    $table_check = mysqli_query($con, "SHOW TABLES LIKE 'practitioner_notifications'");
+    if (mysqli_num_rows($table_check) == 0) {
+        return 0;
+    }
+    
     $practitioner_id = mysqli_real_escape_string($con, $practitioner_id);
     $query = "SELECT COUNT(*) as unread_count FROM practitioner_notifications WHERE practitioner_id = $practitioner_id AND is_read = 0";
     $result = mysqli_query($con, $query);
