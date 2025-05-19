@@ -692,20 +692,24 @@ class Controller
                         case 4: $status_text = 'completed'; break;
                     }
                     
-                    // Create notification for the user
-                    $notif_sql = "INSERT INTO user_notifications (user_id, type, message) VALUES (?, ?, ?)";
-                    $notif_stmt = $this->con->prepare($notif_sql);
-                    $type = 'Appointment Update';
-                    
-                    if ($status == 2 && isset($therapist_id)) {
-                        $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been accepted and assigned to " . $therapist_fname . " " . $therapist_lname . ".";
-                    } else {
-                        $notification_message = "Your appointment #" . ($appointment_id + 100) . " for " . $fname . " " . $lname . " has been marked as " . $status_text . ".";
+                    // Check if user_notifications table exists before trying to use it
+                    $table_check = $this->con->query("SHOW TABLES LIKE 'user_notifications'");
+                    if ($table_check->num_rows > 0) {
+                        // Create notification for the user
+                        $notif_sql = "INSERT INTO user_notifications (user_id, type, message) VALUES (?, ?, ?)";
+                        $notif_stmt = $this->con->prepare($notif_sql);
+                        $type = 'Appointment Update';
+                        
+                        if ($status == 2 && isset($therapist_id)) {
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been accepted and assigned to " . $therapist_fname . " " . $therapist_lname . ".";
+                        } else {
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " for " . $fname . " " . $lname . " has been marked as " . $status_text . ".";
+                        }
+                        
+                        $notif_stmt->bind_param("iss", $user_id, $type, $notification_message);
+                        $notif_stmt->execute();
+                        $notif_stmt->close();
                     }
-                    
-                    $notif_stmt->bind_param("iss", $user_id, $type, $notification_message);
-                    $notif_stmt->execute();
-                    $notif_stmt->close();
                     
                     return json_encode(['status' => 'success', 'message' => "Appointment status updated successfully."]);
                 } else {
@@ -753,20 +757,24 @@ class Controller
                 $stmt->bind_param("iii", $status, $_SESSION['id'], $appointment_id);
                 
                 if ($stmt->execute()) {
-                    // Create notification for the user
-                    $notif_sql = "INSERT INTO user_notifications (user_id, type, message) VALUES (?, ?, ?)";
-                    $notif_stmt = $this->con->prepare($notif_sql);
-                    $type = 'Appointment Update';
-                    
-                    if ($status == 2) {
-                        $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been accepted by " . $_SESSION['fname'] . " " . $_SESSION['lname'] . ".";
-                    } else {
-                        $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been declined by " . $_SESSION['fname'] . " " . $_SESSION['lname'] . ".";
+                    // Check if user_notifications table exists before trying to use it
+                    $table_check = $this->con->query("SHOW TABLES LIKE 'user_notifications'");
+                    if ($table_check->num_rows > 0) {
+                        // Create notification for the user
+                        $notif_sql = "INSERT INTO user_notifications (user_id, type, message) VALUES (?, ?, ?)";
+                        $notif_stmt = $this->con->prepare($notif_sql);
+                        $type = 'Appointment Update';
+                        
+                        if ($status == 2) {
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been accepted by " . $_SESSION['fname'] . " " . $_SESSION['lname'] . ".";
+                        } else {
+                            $notification_message = "Your appointment #" . ($appointment_id + 100) . " has been declined by " . $_SESSION['fname'] . " " . $_SESSION['lname'] . ".";
+                        }
+                        
+                        $notif_stmt->bind_param("iss", $user_id, $type, $notification_message);
+                        $notif_stmt->execute();
+                        $notif_stmt->close();
                     }
-                    
-                    $notif_stmt->bind_param("iss", $user_id, $type, $notification_message);
-                    $notif_stmt->execute();
-                    $notif_stmt->close();
                     
                     return json_encode([
                         'status' => 'success', 

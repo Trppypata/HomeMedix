@@ -317,6 +317,7 @@ if (isset($_GET['id'])) {
             url: '../backend/ajax.php?action=' + action,
             method: 'POST',
             data: formData,
+            dataType: 'json',
             beforeSend: function() {
                 Swal.fire({
                     icon: "info",
@@ -330,7 +331,6 @@ if (isset($_GET['id'])) {
             },
             success: function(resp) {
                 console.log(resp)
-                resp = JSON.parse(resp)
                 if (resp.status === 'error') {
                     Swal.fire({
                         icon: 'error',
@@ -352,6 +352,15 @@ if (isset($_GET['id'])) {
                         heightAuto: false
                     });
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Could not connect to server. Please try again later.',
+                    heightAuto: false
+                });
             }
         })
     })

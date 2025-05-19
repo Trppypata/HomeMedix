@@ -302,6 +302,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
             data: {
               'appointment_id': appointment_id
             },
+            dataType: 'json',
             beforeSend: function() {
               Swal.fire({
                 icon: "info",
@@ -315,7 +316,6 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
             },
             success: function(resp) {
               console.log(resp)
-              resp = JSON.parse(resp)
               if (resp.status === 'error') {
                 Swal.fire({
                   icon: 'error',
@@ -337,6 +337,15 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                   heightAuto: false
                 });
               }
+            },
+            error: function(xhr, status, error) {
+              console.error('AJAX Error:', xhr, status, error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Connection Error',
+                text: 'Could not connect to server. Please try again later.',
+                heightAuto: false
+              });
             }
           })
         }
@@ -388,9 +397,9 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
         $.ajax({
           url: '../backend/ajax.php?action=get_therapists',
           method: 'GET',
-          success: function(resp) {
+          dataType: 'json', // Tell jQuery to expect JSON
+          success: function(data) {
             try {
-              const data = JSON.parse(resp);
               if (data.status === 'success' && data.data.length > 0) {
                 // Create therapist options
                 let therapistOptions = '';
@@ -435,12 +444,13 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
                 });
               }
             } catch (e) {
-              console.error('Error parsing therapists:', e, resp);
+              console.error('Error processing therapists:', e);
               // Fall back to regular confirmation
               showRegularConfirmation(appointment_id, status, statusText, buttonColor);
             }
           },
-          error: function() {
+          error: function(xhr, status, error) {
+            console.error('AJAX Error:', xhr, status, error);
             // Fall back to regular confirmation on error
             showRegularConfirmation(appointment_id, status, statusText, buttonColor);
           }
@@ -484,6 +494,7 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
         url: '../backend/ajax.php?action=update_appointment_status',
         method: 'POST',
         data: data,
+        dataType: 'json', // Tell jQuery to expect JSON response
         beforeSend: function() {
           Swal.fire({
             icon: "info",
@@ -497,42 +508,27 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
           });
         },
         success: function(resp) {
-          try {
-            // Try to parse as JSON if it's a string
-            if (typeof resp === 'string') {
-              resp = JSON.parse(resp);
-            }
-            
-            if (resp.status === 'error') {
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: resp.message || 'An error occurred while updating the appointment status.',
-                heightAuto: false
-              });
-            } else if (resp.status === 'success') {
-              Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: resp.message || `Appointment has been updated successfully!`,
-                heightAuto: false
-              }).then(function() {
-                window.location.reload();
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Unexpected Response',
-                text: 'The server returned an unexpected response. Please try again.',
-                heightAuto: false
-              });
-            }
-          } catch (e) {
-            console.error('Error parsing response:', e, resp);
+          if (resp.status === 'error') {
             Swal.fire({
               icon: 'error',
-              title: 'Invalid Response',
-              text: 'Failed to parse server response. Please try again or contact support.',
+              title: 'Error',
+              text: resp.message || 'An error occurred while updating the appointment status.',
+              heightAuto: false
+            });
+          } else if (resp.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: resp.message || `Appointment has been updated successfully!`,
+              heightAuto: false
+            }).then(function() {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Unexpected Response',
+              text: 'The server returned an unexpected response. Please try again.',
               heightAuto: false
             });
           }
@@ -594,51 +590,42 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
         data: {
           'appointment_id': appointmentId
         },
-        success: function(resp) {
-          try {
-            const data = JSON.parse(resp);
-            if (data.status === 'success') {
-              const appointment = data.data;
-              
-              // Populate modal with data
-              $('#modal-patient-name').text(patientName);
-              $('#modal-sex').text(appointment.sex == 1 ? 'Male' : 'Female');
-              
-              // Calculate age from birthday
-              const birthDate = new Date(appointment.bday);
-              const today = new Date();
-              let age = today.getFullYear() - birthDate.getFullYear();
-              const monthDiff = today.getMonth() - birthDate.getMonth();
-              if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-              }
-              $('#modal-age').text(age);
-              
-              // Format address
-              const fullAddress = `${appointment.address}, ${appointment.barangay}, ${appointment.city}, ${appointment.zip}`;
-              $('#modal-address').text(fullAddress);
-              
-              $('#modal-email').text(appointment.email);
-              $('#modal-phone').text(appointment.phone);
-              $('#modal-appointment-id').text(appointmentId);
-              $('#modal-case').text(appointmentCase);
-              $('#modal-service').text(service);
-              $('#modal-date').text(date);
-              $('#modal-time').text(time);
-              $('#modal-status').text(status);
-              
-              // Show the modal
-              const appointmentModal = new bootstrap.Modal(document.getElementById('appointmentDetailsModal'));
-              appointmentModal.show();
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Could not fetch appointment details.'
-              });
+        dataType: 'json', // Tell jQuery to expect JSON
+        success: function(data) {
+          if (data.status === 'success') {
+            const appointment = data.data;
+            
+            // Populate modal with data
+            $('#modal-patient-name').text(patientName);
+            $('#modal-sex').text(appointment.sex == 1 ? 'Male' : 'Female');
+            
+            // Calculate age from birthday
+            const birthDate = new Date(appointment.bday);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+              age--;
             }
-          } catch (e) {
-            console.error('Error parsing response:', e);
+            $('#modal-age').text(age);
+            
+            // Format address
+            const fullAddress = `${appointment.address}, ${appointment.barangay}, ${appointment.city}, ${appointment.zip}`;
+            $('#modal-address').text(fullAddress);
+            
+            $('#modal-email').text(appointment.email);
+            $('#modal-phone').text(appointment.phone);
+            $('#modal-appointment-id').text(appointmentId);
+            $('#modal-case').text(appointmentCase);
+            $('#modal-service').text(service);
+            $('#modal-date').text(date);
+            $('#modal-time').text(time);
+            $('#modal-status').text(status);
+            
+            // Show the modal
+            const appointmentModal = new bootstrap.Modal(document.getElementById('appointmentDetailsModal'));
+            appointmentModal.show();
+          } else {
             Swal.fire({
               icon: 'error',
               title: 'Error',
@@ -646,7 +633,8 @@ $notif_count = $notif_result ? $notif_result->num_rows : 0;
             });
           }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+          console.error('AJAX Error:', xhr, status, error);
           Swal.fire({
             icon: 'error',
             title: 'Error',

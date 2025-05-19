@@ -196,29 +196,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatSendButton = document.getElementById('chat-send-button');
     const suggestedQuestionsContainer = document.getElementById('suggested-questions');
     
+    // Initial welcome messages and suggestions - hardcoded to avoid CORS issues
+    const welcomeMessage = "Hello! I'm your HomeMedix virtual assistant. How can I help you today?";
+    const followupMessage = "You can ask me about our services, locations, or specific health concerns.";
+    const initialSuggestions = [
+        "What services do you offer?",
+        "How much does physical therapy cost?",
+        "Where are your locations?",
+        "How do I book an appointment?"
+    ];
+    
+    let chatHistory = [];
+    
     // Open chat
     chatBubble.addEventListener('click', function() {
         chatContainer.style.display = 'flex';
         chatBubble.style.display = 'none';
         
-        // Initialize chat
-        fetch('https://homemedix.free.nf/backend/chatbot.php?action=init')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Check if we already have messages
-                    if (chatMessages.childNodes.length === 0) {
-                        addBotMessage(data.welcome);
-                        addBotMessage(data.followup);
-                        
-                        // Add suggested questions
-                        if (data.suggestions && data.suggestions.length > 0) {
-                            showSuggestedQuestions(data.suggestions);
-                        }
-                    }
-                }
-            })
-            .catch(error => console.error('Error initializing chat:', error));
+        // If chat is empty, show welcome messages
+        if (chatMessages.childNodes.length === 0) {
+            addBotMessage(welcomeMessage);
+            addBotMessage(followupMessage);
+            showSuggestedQuestions(initialSuggestions);
+            
+            // Store in chat history
+            chatHistory.push({ sender: 'bot', message: welcomeMessage });
+            chatHistory.push({ sender: 'bot', message: followupMessage });
+        }
     });
     
     // Close chat
@@ -245,42 +249,28 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add user message to chat
             addUserMessage(message);
             
+            // Store in chat history
+            chatHistory.push({ sender: 'user', message: message });
+            
             // Clear input
             chatInput.value = '';
             
             // Show typing indicator
             const typingIndicator = showTypingIndicator();
             
-            // Send message to server
-            const formData = new FormData();
-            formData.append('message', message);
-            
-            fetch('https://homemedix.free.nf/backend/chatbot.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Remove typing indicator
+            // Process message locally to avoid CORS issues
+            setTimeout(() => {
                 removeTypingIndicator(typingIndicator);
+                const response = getLocalBotResponse(message);
+                addBotMessage(response.message);
                 
-                if (data.status === 'success') {
-                    // Add bot response
-                    addBotMessage(data.response);
-                    
-                    // Show suggested questions if any
-                    if (data.suggestions && data.suggestions.length > 0) {
-                        showSuggestedQuestions(data.suggestions);
-                    }
-                } else {
-                    addBotMessage("Sorry, I'm having trouble processing your request right now. Please try again later.");
+                // Store in chat history
+                chatHistory.push({ sender: 'bot', message: response.message });
+                
+                if (response.suggestions && response.suggestions.length > 0) {
+                    showSuggestedQuestions(response.suggestions);
                 }
-            })
-            .catch(error => {
-                console.error('Error sending message:', error);
-                removeTypingIndicator(typingIndicator);
-                addBotMessage("Sorry, there was an error communicating with the server. Please try again later.");
-            });
+            }, 1000);
         }
     }
     
@@ -350,29 +340,66 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Load chat history
-    function loadChatHistory() {
-        fetch('https://homemedix.free.nf/backend/chatbot.php?action=history')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success' && data.history && data.history.length > 0) {
-                    // Clear chat messages
-                    chatMessages.innerHTML = '';
-                    
-                    // Add each message to the chat
-                    data.history.forEach(item => {
-                        if (item.sender === 'user') {
-                            addUserMessage(item.message);
-                        } else {
-                            addBotMessage(item.message);
-                        }
-                    });
-                }
-            })
-            .catch(error => console.error('Error loading chat history:', error));
+    // Local bot response function (to avoid server requests)
+    function getLocalBotResponse(userMessage) {
+        userMessage = userMessage.toLowerCase();
+        
+        // Basic responses based on keywords
+        const responses = {
+            'hello': {
+                'message': 'Hello! Welcome to HomeMedix. How can I help you today?',
+                'suggestions': ["What services do you offer?", "How do I book an appointment?"]
+            },
+            'hi': {
+                'message': 'Hi there! Welcome to HomeMedix. How can I help you today?',
+                'suggestions': ["What services do you offer?", "How do I book an appointment?"]
+            },
+            'services': {
+                'message': 'HomeMedix offers three main services: Physical Therapy, Caregiving Services (8/12/24-hour shifts), and Nursing Home services. Which one would you like to know more about?',
+                'suggestions': ['Tell me about Physical Therapy', 'Tell me about Caregiving', 'Tell me about Nursing Home']
+            },
+            'physical therapy': {
+                'message': 'Our Physical Therapy services help patients regain mobility, reduce pain, and improve overall physical function. Our therapists are experts in rehabilitation for injuries, surgeries, and chronic conditions.',
+                'suggestions': ['What conditions do you treat?', 'How much does physical therapy cost?', 'Do you do home visits?']
+            },
+            'caregiving': {
+                'message': 'Our Caregiving Services provide compassionate in-home care with options for 8-hour, 12-hour, or 24-hour shifts. Our caregivers assist with daily activities, medication reminders, and provide companionship.',
+                'suggestions': ['Tell me about 8-hour shifts', 'Tell me about 24-hour care', 'How are caregivers selected?']
+            },
+            'nursing home': {
+                'message': 'Our Nursing Home service provides 24/7 professional nursing care in a comfortable facility for patients who need continuous medical attention and assistance.',
+                'suggestions': ['What facilities do you have?', 'What is the cost?', 'Can I visit anytime?']
+            },
+            'appointment': {
+                'message': 'You can book an appointment through our website by visiting the Appointment page or by calling our office at 0917 102 8250.',
+                'suggestions': ['What information do I need to book?', 'How far in advance should I book?']
+            },
+            'price': {
+                'message': 'Our service prices vary depending on the type of care and duration. For a detailed quote, please contact us directly or schedule a free initial consultation.',
+                'suggestions': ['Tell me about Physical Therapy costs', 'Tell me about Caregiving costs', 'Tell me about Nursing Home costs']
+            },
+            'location': {
+                'message': 'HomeMedix has three locations in Metro Manila: 124 A. Flores St, Marikina; 28 6th St, Marikina; and 24 Sampaguita St, Marikina.',
+                'suggestions': ['How do I get to your main office?', 'Do you offer home visits?', 'Are all services available at each location?']
+            },
+            'contact': {
+                'message': 'You can reach us at 0917 102 8250 or email us at HomeMedix.ptcaregiving@gmail.com. Our office hours are Monday-Saturday, 8am-5pm.',
+                'suggestions': ['Is someone available 24/7?', 'How quickly do you respond to emails?', 'Can I book an appointment now?']
+            }
+        };
+        
+        // Match keyword-based responses
+        for (const keyword in responses) {
+            if (userMessage.includes(keyword)) {
+                return responses[keyword];
+            }
+        }
+        
+        // Default response if no match found
+        return {
+            'message': "I'm not sure I understand your question. You can ask me about our services, pricing, locations, or booking an appointment.",
+            'suggestions': ['What services do you offer?', 'How do I book an appointment?', 'Tell me about your prices', 'Where are you located?']
+        };
     }
-    
-    // Call loadChatHistory if there's an existing session
-    loadChatHistory();
 });
 </script> 
