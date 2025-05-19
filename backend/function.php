@@ -138,4 +138,20 @@ function getService($service){
     }
 }
 
+function getPractitionerNotifications($practitioner_id, $limit = 10) {
+    global $con;
+    $practitioner_id = mysqli_real_escape_string($con, $practitioner_id);
+    $query = "SELECT * FROM practitioner_notifications WHERE practitioner_id = $practitioner_id ORDER BY created_at DESC LIMIT $limit";
+    return mysqli_query($con, $query);
+}
+
+function getPractitionerUnreadNotificationCount($practitioner_id) {
+    global $con;
+    $practitioner_id = mysqli_real_escape_string($con, $practitioner_id);
+    $query = "SELECT COUNT(*) as unread_count FROM practitioner_notifications WHERE practitioner_id = $practitioner_id AND is_read = 0";
+    $result = mysqli_query($con, $query);
+    $row = mysqli_fetch_assoc($result);
+    return $row['unread_count'] ?? 0;
+}
+
 ?>

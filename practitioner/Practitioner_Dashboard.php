@@ -4,6 +4,8 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
   header("location: ../index.php");
   exit;
 }
+$unread_count = getPractitionerUnreadNotificationCount($_SESSION['id']);
+$notifications = getPractitionerNotifications($_SESSION['id'], 10);
 ?>
 <html lang="en">
   <head>
@@ -55,10 +57,27 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
       <div class="main_content">
         <div class="header d-flex justify-content-end align-items-center">
 
-            <button class="btn btn-light notification-btn">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="notification-badge">3</span>
-            </button>
+            <div style="position:relative;">
+              <button class="btn btn-light notification-btn" id="notifBell">
+                  <span class="material-symbols-outlined">notifications</span>
+                  <?php if ($unread_count > 0): ?>
+                  <span class="notification-badge"><?= $unread_count ?></span>
+                  <?php endif; ?>
+              </button>
+              <div class="notification-dropdown" id="notifDropdown" style="display:none;position:absolute;right:0;top:40px;z-index:1000;background:#fff;border:1px solid #ccc;border-radius:8px;min-width:300px;">
+                <?php if (mysqli_num_rows($notifications) == 0): ?>
+                  <div class="notification-item p-3">No new notifications.</div>
+                <?php else: ?>
+                  <?php while ($notif = mysqli_fetch_assoc($notifications)): ?>
+                    <div class="notification-item p-3 border-bottom<?= $notif['is_read'] ? '' : ' fw-bold' ?>">
+                      <strong><?= htmlspecialchars($notif['type']) ?>:</strong>
+                      <?= htmlspecialchars($notif['message']) ?><br>
+                      <small><?= $notif['created_at'] ?></small>
+                    </div>
+                  <?php endwhile; ?>
+                <?php endif; ?>
+              </div>
+            </div>
 
           <h6>Dr. <span class="bordered-blue"><?= $_SESSION['fname'] . ' ' . $_SESSION['lname'] ?></span>
           </h6>
@@ -268,5 +287,18 @@ if(!isset($_SESSION['role']) || ($_SESSION['role'] != 2 && $_SESSION['role'] != 
     </div>
     </div>
     </div>
+    <script>
+    document.getElementById('notifBell').onclick = function() {
+      var dropdown = document.getElementById('notifDropdown');
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    };
+    document.addEventListener('click', function(event) {
+      var bell = document.getElementById('notifBell');
+      var dropdown = document.getElementById('notifDropdown');
+      if (!bell.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+    </script>
   </body>
 </html>

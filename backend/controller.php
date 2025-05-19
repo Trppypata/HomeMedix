@@ -710,6 +710,17 @@ class Controller
                         $notif_stmt->execute();
                         $notif_stmt->close();
                     }
+                    // Practitioner notification logic
+                    $table_check2 = $this->con->query("SHOW TABLES LIKE 'practitioner_notifications'");
+                    if ($table_check2->num_rows > 0 && isset($therapist_id)) {
+                        $notif_sql2 = "INSERT INTO practitioner_notifications (practitioner_id, type, message) VALUES (?, ?, ?)";
+                        $notif_stmt2 = $this->con->prepare($notif_sql2);
+                        $type2 = 'Appointment Assignment';
+                        $message2 = "You have been assigned to appointment #" . ($appointment_id + 100) . " for " . $fname . " " . $lname . ".";
+                        $notif_stmt2->bind_param("iss", $therapist_id, $type2, $message2);
+                        $notif_stmt2->execute();
+                        $notif_stmt2->close();
+                    }
                     
                     return json_encode(['status' => 'success', 'message' => "Appointment status updated successfully."]);
                 } else {
@@ -774,6 +785,21 @@ class Controller
                         $notif_stmt->bind_param("iss", $user_id, $type, $notification_message);
                         $notif_stmt->execute();
                         $notif_stmt->close();
+                    }
+                    // Practitioner notification logic
+                    $table_check2 = $this->con->query("SHOW TABLES LIKE 'practitioner_notifications'");
+                    if ($table_check2->num_rows > 0) {
+                        $notif_sql2 = "INSERT INTO practitioner_notifications (practitioner_id, type, message) VALUES (?, ?, ?)";
+                        $notif_stmt2 = $this->con->prepare($notif_sql2);
+                        $type2 = 'Appointment Status';
+                        if ($status == 2) {
+                            $message2 = "You have accepted appointment #" . ($appointment_id + 100) . " for " . $fname . " " . $lname . ".";
+                        } else {
+                            $message2 = "You have declined appointment #" . ($appointment_id + 100) . " for " . $fname . " " . $lname . ".";
+                        }
+                        $notif_stmt2->bind_param("iss", $_SESSION['id'], $type2, $message2);
+                        $notif_stmt2->execute();
+                        $notif_stmt2->close();
                     }
                     
                     return json_encode([
