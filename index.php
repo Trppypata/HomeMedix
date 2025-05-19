@@ -234,6 +234,7 @@ if (isset($_SESSION['role'])) {
             url: 'backend/ajax.php?action=login',
             method: 'POST',
             data: $(this).serialize(),
+            dataType: 'json',
             beforeSend: function() {
                 Swal.fire({
                     icon: "info",
@@ -247,8 +248,7 @@ if (isset($_SESSION['role'])) {
             },
             success: function(resp) {
                 console.log(resp);
-                resp = JSON.parse(resp);
-
+                
                 if (resp.status === 'error') {
                     Swal.fire({
                         icon: 'error',
@@ -265,7 +265,15 @@ if (isset($_SESSION['role'])) {
                     });
                 }
             },
-
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'Could not connect to server. Please try again later.',
+                    heightAuto: false
+                });
+            }
         })
     })
 
