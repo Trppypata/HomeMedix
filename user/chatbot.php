@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
         chatBubble.style.display = 'none';
         
         // Initialize chat
-        fetch('../backend/chatbot.php?action=init')
+        fetch('https://homemedix.free.nf/backend/chatbot.php?action=init')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData();
             formData.append('message', message);
             
-            fetch('../backend/chatbot.php', {
+            fetch('https://homemedix.free.nf/backend/chatbot.php', {
                 method: 'POST',
                 body: formData
             })
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load chat history
     function loadChatHistory() {
-        fetch('../backend/chatbot.php?action=history')
+        fetch('https://homemedix.free.nf/backend/chatbot.php?action=history')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success' && data.history && data.history.length > 0) {

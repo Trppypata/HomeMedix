@@ -8,8 +8,17 @@ if (file_exists('./config.php')) {
     die(json_encode(['status' => 'error', 'message' => 'Configuration file not found']));
 }
 
+// Set CORS headers
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: *'); // For production, replace * with your specific domain
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// If this is a preflight OPTIONS request, return early with 200
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 function getServices() {
     global $con;

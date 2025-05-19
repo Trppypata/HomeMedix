@@ -1,4 +1,15 @@
 <?php
+// Set CORS headers to allow cross-origin requests
+header('Access-Control-Allow-Origin: *'); // For production, replace * with your specific domain
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// If this is a preflight OPTIONS request, return early with 200
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 // Include database connection
 if (file_exists('./config.php')) {
     require_once('./config.php');
