@@ -49,7 +49,7 @@ foreach($user_data as $data){
                 </li>
                 <?php if(isset($_SESSION['id'])): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="profile.php">Hello <?= $_SESSION['fname'] ?></a>
+                    <a class="nav-link" href="Profile.php">Hello <?= $_SESSION['fname'] ?></a>
                 </li>
                 <?php else: ?>
                 <li class="nav-item">
