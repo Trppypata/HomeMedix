@@ -284,7 +284,7 @@
       </footer>
 
     <!-- HomeMedix Chatbot -->
-    <script src="assets/js/chatbot.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
 </body>
   <!-- Load Google's reCAPTCHA API -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>

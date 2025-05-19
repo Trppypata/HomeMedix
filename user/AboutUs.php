@@ -248,6 +248,6 @@
       </footer>
 
     <!-- HomeMedix Chatbot -->
-    <script src="assets/js/chatbot.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
 </body>
 </html>
